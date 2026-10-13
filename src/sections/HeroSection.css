@@ -1,0 +1,916 @@
+/* ============================================================
+   HeroSection.css – Split Layout: Content (Left) & Pyramid Orbit (Right)
+   ============================================================ */
+
+.hs-root {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding-top: var(--nav-height);
+}
+
+/* ══════════════════════════════════════════
+   BACKGROUND
+══════════════════════════════════════════ */
+.hs-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hs-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(95px);
+  pointer-events: none;
+}
+
+.b1 {
+  width: 600px; height: 600px;
+  top: -160px; left: -160px;
+  background: radial-gradient(circle, var(--blob-1) 0%, rgba(192, 107, 255, 0.08) 60%, transparent 100%);
+  animation: blobFloat 12s ease-in-out infinite;
+}
+
+.b2 {
+  width: 480px; height: 480px;
+  top: 10%; right: -120px;
+  background: radial-gradient(circle, var(--blob-2) 0%, rgba(122, 28, 172, 0.06) 60%, transparent 100%);
+  animation: blobFloat 10s ease-in-out infinite reverse;
+}
+
+.b3 {
+  width: 380px; height: 380px;
+  bottom: -100px; left: 35%;
+  background: radial-gradient(circle, var(--blob-3) 0%, transparent 70%);
+  animation: blobFloat 14s ease-in-out infinite 2s;
+}
+
+.hs-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--grid-dot) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 30%, transparent 100%);
+}
+
+.hs-noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   SPLIT GRID LAYOUT
+══════════════════════════════════════════ */
+.hs-wrap {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 56px;
+  padding-top: 36px;
+  padding-bottom: 96px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ══════════════════════════════════════════
+   LEFT COLUMN: Content
+══════════════════════════════════════════ */
+.hs-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+/* Status pill */
+.hs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: var(--accent-soft);
+  border: 1.5px solid var(--border-medium);
+  border-radius: 100px;
+  font-size: 12px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--accent-primary);
+  letter-spacing: 0.3px;
+  margin-bottom: 22px;
+  animation: fadeInUp 0.6s 0.0s both;
+}
+
+.hs-pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  animation: pulse-ring 2s infinite;
+  flex-shrink: 0;
+}
+
+/* Greeting */
+.hs-greeting {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-family: var(--font-heading);
+  animation: fadeInUp 0.6s 0.10s both;
+}
+
+/* Name */
+.hs-name {
+  font-size: 68px;
+  font-weight: 900;
+  letter-spacing: -3px;
+  line-height: 1.02;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  animation: fadeInUp 0.6s 0.18s both;
+  position: relative;
+}
+
+.hs-gradient-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.hs-underline-bar {
+  display: block;
+  width: 80px;
+  height: 5px;
+  background: var(--accent-gradient);
+  border-radius: 3px;
+  margin-top: 4px;
+  opacity: 0.55;
+}
+
+/* Typewriter */
+.hs-tw {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border-medium);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: ui-monospace, Consolas, 'SF Mono', monospace;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  animation: fadeInUp 0.6s 0.26s both;
+  min-width: 280px;
+}
+
+.hs-tw-icon {
+  color: var(--accent-primary);
+  font-weight: 700;
+  font-size: 13px;
+  background: var(--accent-soft);
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+
+.hs-tw-text { color: var(--accent-primary); font-weight: 600; }
+
+.hs-tw-cursor {
+  color: var(--accent-mid);
+  animation: blink 0.75s step-end infinite;
+  font-weight: 300;
+}
+
+/* Description */
+.hs-desc {
+  font-size: 16.5px;
+  line-height: 1.80;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin-bottom: 18px;
+  animation: fadeInUp 0.6s 0.34s both;
+}
+.hs-desc strong { color: var(--text-primary); font-weight: 700; }
+
+/* Location */
+.hs-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 36px;
+  animation: fadeInUp 0.6s 0.38s both;
+}
+
+/* ── CTAs ── */
+.hs-ctas {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+  animation: fadeInUp 0.6s 0.44s both;
+}
+
+/* PRIMARY — Hire Me */
+.hs-btn-hire {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 30px;
+  background: var(--accent-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 0 8px 28px var(--accent-glow), 0 2px 8px var(--accent-glow);
+  transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+
+.hs-btn-hire-shine {
+  display: none;
+}
+
+.hs-btn-hire:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px var(--accent-glow), 0 4px 12px var(--accent-glow);
+}
+
+.hs-btn-hire:hover .hs-arrow {
+  transform: translateX(4px);
+}
+
+.hs-arrow { transition: transform 0.22s ease; }
+
+.hs-btn-hire:active { transform: translateY(-1px); }
+
+/* SECONDARY — View My Work */
+.hs-btn-work {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  background: transparent;
+  color: var(--accent-primary);
+  border: 2px solid var(--accent-primary);
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hs-btn-work::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent-gradient);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.hs-btn-work:hover {
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+.hs-btn-work:hover::before { opacity: 1; }
+
+.hs-btn-work span, .hs-btn-work svg { position: relative; z-index: 1; }
+
+/* TERTIARY — Resume */
+.hs-btn-resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 13px 20px;
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border-medium);
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.22s ease;
+}
+
+.hs-btn-resume:hover {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  background: var(--accent-soft);
+  transform: translateY(-2px);
+}
+
+/* ── Socials ── */
+.hs-socials {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeInUp 0.6s 0.52s both;
+}
+
+.hs-socials-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-right: 4px;
+}
+
+.hs-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-medium);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-xs);
+  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+.hs-social:hover {
+  background: var(--accent-gradient);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-3px) rotate(-6deg);
+  box-shadow: var(--shadow-blue);
+}
+
+/* ══════════════════════════════════════════
+   RIGHT COLUMN: Pyramid Tech Network
+══════════════════════════════════════════ */
+.hs-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInUp 0.8s 0.30s both;
+}
+
+.hs-pyramid-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 400 / 350;
+  flex-shrink: 0;
+}
+
+/* Animated connection lines */
+.hs-pyramid-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hs-py-line {
+  stroke: rgba(122, 28, 172, 0.55);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-dasharray: 8 6;
+  animation: flowLine 1.2s linear infinite;
+}
+
+@keyframes flowLine {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+/* Base style for nodes */
+.hs-py-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translate(-50%, -50%);
+  animation: floatPyramid 6s ease-in-out infinite;
+}
+
+.hs-py-node:hover {
+  transform: translate(-50%, -58%) scale(1.12);
+  z-index: 10;
+}
+
+/* Individual node alignments using responsive percentages */
+/* Row 1 (Apex) */
+.p-1-1 { top: 12%; left: 36%; }
+.p-1-2 { top: 12%; left: 64%; }
+
+/* Row 2 */
+.p-2-1 { top: 38%; left: 20%; }
+.p-2-2 { top: 38%; left: 50%; }
+.p-2-3 { top: 38%; left: 80%; }
+
+/* Row 3 */
+.p-3-1 { top: 64%; left: 16%; }
+.p-3-2 { top: 64%; left: 50%; }
+.p-3-3 { top: 64%; left: 84%; }
+
+/* Row 4 (Base) */
+.p-4-1 { top: 89%; left: 14%; }
+.p-4-2 { top: 89%; left: 50%; }
+.p-4-3 { top: 89%; left: 86%; }
+
+/* Tooltip on hover */
+.hs-py-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  opacity: 0;
+  pointer-events: none;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid var(--border-medium);
+  border-radius: 8px;
+  padding: 6px 12px;
+  min-width: 140px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.22);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 30;
+}
+
+.hs-py-node:hover .hs-py-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.p-1-1 .hs-py-tooltip,
+.p-1-2 .hs-py-tooltip {
+  bottom: auto;
+  top: calc(100% + 30px);
+}
+
+.hs-py-tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.hs-py-tooltip-name {
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.hs-py-tooltip-pct {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.hs-py-tooltip-track {
+  width: 100%;
+  height: 4px;
+  background: var(--border-light);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.hs-py-tooltip-fill {
+  height: 100%;
+  background: var(--accent-gradient);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* The coin container */
+.hs-py-coin {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-medium);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hs-py-coin svg {
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Default Brand Colors and subtle glows for coin containers */
+.tech-react { color: #0891b2; }
+.tech-react-bg {
+  border-color: rgba(97, 218, 251, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(97, 218, 251, 0.15);
+}
+
+.tech-netcore { color: #7e22ce; }
+.tech-netcore-bg {
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+}
+
+.tech-node { color: #15803d; }
+.tech-node-bg {
+  border-color: rgba(34, 197, 94, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+}
+
+.tech-express { color: #111111; }
+.tech-express-bg {
+  border-color: rgba(17, 17, 17, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(17, 17, 17, 0.08);
+}
+
+.tech-postgres { color: #0369a1; }
+.tech-postgres-bg {
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+.tech-oracle { color: #dc2626; }
+.tech-oracle-bg {
+  border-color: rgba(248, 113, 113, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(248, 113, 113, 0.15);
+}
+
+.tech-linq { color: #7e22ce; }
+.tech-linq-bg {
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+}
+
+.tech-api { color: #0284c7; }
+.tech-api-bg {
+  border-color: rgba(14, 165, 233, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+
+.tech-postman { color: #ea580c; }
+.tech-postman-bg {
+  border-color: rgba(249, 115, 22, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+}
+
+.tech-swagger { color: #15803d; }
+.tech-swagger-bg {
+  border-color: rgba(132, 204, 22, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(132, 204, 22, 0.15);
+}
+
+.tech-efcore { color: #6366f1; }
+.tech-efcore-bg {
+  border-color: rgba(99, 102, 241, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.tech-htmlcss { color: #ea580c; }
+.tech-htmlcss-bg {
+  border-color: rgba(234, 88, 12, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
+}
+
+.tech-cleanarch { color: #059669; }
+.tech-cleanarch-bg {
+  border-color: rgba(5, 150, 105, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
+}
+
+.tech-jwt { color: #c026d3; }
+.tech-jwt-bg {
+  border-color: rgba(192, 38, 211, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(192, 38, 211, 0.15);
+}
+
+.tech-git { color: #e11d48; }
+.tech-git-bg {
+  border-color: rgba(225, 29, 72, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
+}
+
+.tech-ocr { color: #0891b2; }
+.tech-ocr-bg {
+  border-color: rgba(8, 145, 178, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.15);
+}
+
+/* Labels below coins */
+.hs-py-label {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
+  margin-top: 6px;
+  background: var(--bg-card);
+  padding: 2px 8px;
+  border-radius: 100px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  white-space: nowrap;
+  transition: all 0.22s ease;
+}
+
+.hs-py-node:hover .hs-py-label {
+  color: var(--accent-primary);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Floating animation */
+@keyframes floatPyramid {
+  0%, 100% {
+    margin-top: 0px;
+  }
+  50% {
+    margin-top: -8px;
+  }
+}
+
+/* Node brand specific styles */
+/* React */
+.hs-py-node:hover .tech-react-bg {
+  background: #f0fdfa;
+  border-color: #61dafb;
+  box-shadow: 0 8px 24px rgba(97, 218, 251, 0.35);
+}
+.hs-py-node:hover .tech-react {
+  color: #0891b2;
+  transform: rotate(20deg);
+}
+
+/* ASP.NET Core */
+.hs-py-node:hover .tech-netcore-bg {
+  background: #faf5ff;
+  border-color: #a855f7;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.35);
+}
+.hs-py-node:hover .tech-netcore {
+  color: #7e22ce;
+}
+
+/* PostgreSQL */
+.hs-py-node:hover .tech-postgres-bg {
+  background: #f0f9ff;
+  border-color: #38bdf8;
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.35);
+}
+.hs-py-node:hover .tech-postgres {
+  color: #0369a1;
+}
+
+/* Oracle */
+.hs-py-node:hover .tech-oracle-bg {
+  background: #fef2f2;
+  border-color: #f87171;
+  box-shadow: 0 8px 24px rgba(248, 113, 113, 0.35);
+}
+.hs-py-node:hover .tech-oracle {
+  color: #dc2626;
+}
+
+/* Node.js */
+.hs-py-node:hover .tech-node-bg {
+  background: #f0fdf4;
+  border-color: #22c55e;
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
+}
+.hs-py-node:hover .tech-node {
+  color: #15803d;
+}
+
+/* Express.js */
+.hs-py-node:hover .tech-express-bg {
+  background: #fafafa;
+  border-color: #111111;
+  box-shadow: 0 8px 24px rgba(17, 17, 17, 0.35);
+}
+.hs-py-node:hover .tech-express {
+  color: #000000;
+}
+
+/* Postman */
+.hs-py-node:hover .tech-postman-bg {
+  background: #fff7ed;
+  border-color: #f97316;
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
+}
+.hs-py-node:hover .tech-postman {
+  color: #ea580c;
+}
+
+/* Swagger */
+.hs-py-node:hover .tech-swagger-bg {
+  background: #f0fdf4;
+  border-color: #84cc16;
+  box-shadow: 0 8px 24px rgba(132, 204, 22, 0.35);
+}
+.hs-py-node:hover .tech-swagger {
+  color: #4d7c0f;
+}
+
+/* APIs */
+.hs-py-node:hover .tech-api-bg {
+  background: #f0f9ff;
+  border-color: #0ea5e9;
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35);
+}
+.hs-py-node:hover .tech-api {
+  color: #0369a1;
+}
+
+/* LINQ */
+.hs-py-node:hover .tech-linq-bg {
+  background: #faf5ff;
+  border-color: #a855f7;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.35);
+}
+.hs-py-node:hover .tech-linq {
+  color: #7e22ce;
+}
+
+/* ── Scroll cue ── */
+.hs-scroll {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  animation: fadeInUp 1s 1.2s both;
+  z-index: 1;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: color var(--transition-fast);
+}
+
+.hs-scroll:hover {
+  color: var(--accent-primary);
+}
+
+.hs-scroll-arrow-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-medium);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s ease;
+  animation: pulseBox 2s infinite;
+}
+
+.hs-scroll-arrow {
+  color: var(--accent-primary);
+  animation: bounceArrow 1.6s ease-in-out infinite;
+}
+
+.hs-scroll:hover .hs-scroll-arrow-box {
+  border-color: var(--accent-primary);
+  background: var(--accent-soft);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+/* ══════════════════════════════════════════
+   KEYFRAMES & RESPONSIVE
+══════════════════════════════════════════ */
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(20px, -35px) scale(1.03); }
+  66%       { transform: translate(-15px, 25px) scale(0.97); }
+}
+
+@keyframes bounceArrow {
+  0%, 100% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes pulseBox {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  from, to { opacity: 0; }
+  50%       { opacity: 1; }
+}
+
+@media (max-width: 1100px) {
+  .hs-wrap {
+    grid-template-columns: 1fr;
+    padding-top: 24px;
+    padding-bottom: 80px;
+    gap: 60px;
+  }
+
+  .hs-left {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hs-desc   { max-width: 100%; }
+  .hs-ctas   { justify-content: center; }
+  .hs-socials { justify-content: center; }
+  .hs-right { justify-content: center; width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .hs-name { font-size: 52px; letter-spacing: -2px; }
+  .hs-desc { font-size: 15px; }
+  .hs-ctas { flex-direction: column; width: 100%; }
+  .hs-btn-hire,
+  .hs-btn-work,
+  .hs-btn-resume { width: 100%; justify-content: center; }
+  
+  .hs-pyramid-wrapper {
+    max-width: 320px;
+  }
+  
+  .hs-py-coin {
+    width: 44px;
+    height: 44px;
+  }
+  .hs-py-coin svg {
+    width: 20px;
+    height: 20px;
+  }
+  .hs-py-label {
+    font-size: 9px;
+    padding: 1px 6px;
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hs-name { font-size: 40px; }
+  
+  .hs-pyramid-wrapper {
+    max-width: 260px;
+  }
+  
+  .hs-py-coin {
+    width: 36px;
+    height: 36px;
+  }
+  .hs-py-coin svg {
+    width: 16px;
+    height: 16px;
+  }
+  .hs-py-label {
+    font-size: 8px;
+    padding: 1px 4px;
+    margin-top: 3px;
+  }
+}

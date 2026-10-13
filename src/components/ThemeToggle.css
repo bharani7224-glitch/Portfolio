@@ -1,0 +1,81 @@
+/* ============================================================
+   Theme Toggle Button Styles (#7A1CAC & #000000)
+   ============================================================ */
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-xs);
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--accent-primary);
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+.theme-toggle-btn:active {
+  transform: translateY(0);
+}
+
+.theme-toggle-icon-wrap {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-icon {
+  position: absolute;
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Sun Icon (shown in dark mode to switch to light, or vice versa) */
+.sun-icon {
+  color: #fbbf24;
+}
+
+/* Moon Icon */
+.moon-icon {
+  color: var(--accent-primary);
+}
+
+.theme-toggle-icon-wrap.is-dark .sun-icon {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.theme-toggle-icon-wrap.is-dark .moon-icon {
+  opacity: 0;
+  transform: scale(0.4) rotate(90deg);
+  pointer-events: none;
+}
+
+.theme-toggle-icon-wrap.is-light .sun-icon {
+  opacity: 0;
+  transform: scale(0.4) rotate(-90deg);
+  pointer-events: none;
+}
+
+.theme-toggle-icon-wrap.is-light .moon-icon {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
