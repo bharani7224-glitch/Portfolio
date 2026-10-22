@@ -3,6 +3,7 @@ import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-reac
 import { Github, Linkedin } from '../components/SocialIcons';
 import { ScrollReveal } from '../components/ScrollReveal';
 import { PORTFOLIO_DATA } from '../portfolioData';
+import { contactApi, ApiError } from '../services/api';
 import './ContactSection.css';
 
 interface FormState {
@@ -25,6 +26,8 @@ export const ContactSection: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [successNote, setSuccessNote] = useState<string | null>(null);
 
   const contactCards = [
     {
@@ -66,18 +69,48 @@ export const ContactSection: React.FC = () => {
     const { name, value } = e.target;
     setForm(p => ({ ...p, [name]: value }));
     if (errors[name as keyof FormErrors]) setErrors(p => ({ ...p, [name]: undefined }));
+    if (serverError) setServerError(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate() || isSubmitting) return;
+
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setServerError(null);
+
+    try {
+      const res = await contactApi.submit({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        subject: form.subject.trim(),
+        message: form.message.trim(),
+      });
+
       setSubmitSuccess(true);
+      setSuccessNote(res.delivery?.note || null);
       setForm({ name: '', email: '', subject: '', message: '' });
-      setTimeout(() => setSubmitSuccess(false), 6000);
-    }, 1200);
+      setTimeout(() => {
+        setSubmitSuccess(false);
+        setSuccessNote(null);
+      }, 7000);
+    } catch (err: any) {
+      if (err instanceof ApiError && err.problem) {
+        if (err.problem.errors) {
+          const fieldErrors: FormErrors = {};
+          if (err.problem.errors.name) fieldErrors.name = err.problem.errors.name[0];
+          if (err.problem.errors.email) fieldErrors.email = err.problem.errors.email[0];
+          if (err.problem.errors.subject) fieldErrors.subject = err.problem.errors.subject[0];
+          if (err.problem.errors.message) fieldErrors.message = err.problem.errors.message[0];
+          setErrors(fieldErrors);
+        }
+        setServerError(err.problem.detail || 'Failed to submit contact message.');
+      } else {
+        setServerError('Unable to reach server. Please check your internet connection or email directly.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -138,9 +171,34 @@ export const ContactSection: React.FC = () => {
                   </div>
                   <h3>Message Sent!</h3>
                   <p>Thank you for reaching out. Bharani will get back to you shortly.</p>
+                  {successNote && (
+                    <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '0.5rem' }}>
+                      {successNote}
+                    </p>
+                  )}
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate className="contact-form">
+                  {serverError && (
+                    <div
+                      style={{
+                        padding: '10px 14px',
+                        marginBottom: '1rem',
+                        borderRadius: '8px',
+                        background: 'rgba(239, 68, 68, 0.1)',
+                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                        color: '#ef4444',
+                        fontSize: '0.875rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                      }}
+                      role="alert"
+                    >
+                      <AlertCircle size={16} />
+                      <span>{serverError}</span>
+                    </div>
+                  )}
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor="name">Full Name</label>

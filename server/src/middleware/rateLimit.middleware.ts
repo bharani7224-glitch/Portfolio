@@ -46,3 +46,22 @@ export const adminMutationRateLimiter = rateLimit({
     detail: 'Too many administrative modifications submitted. Please wait before trying again.',
   },
 });
+
+/**
+ * Contact Submission Rate Limiter
+ * Applied to public contact message submissions.
+ * Default: 5 requests per 15 minutes per IP (configurable via CONTACT_RATE_LIMIT).
+ */
+export const contactRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: () => parseInt(process.env.CONTACT_RATE_LIMIT || '5', 10),
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: () => process.env.NODE_ENV === 'test' && !process.env.TEST_RATE_LIMIT,
+  message: {
+    type: 'https://api.portfolio.dev/errors/rate-limit-exceeded',
+    title: 'Too Many Requests',
+    status: 429,
+    detail: 'Too many contact messages sent from this IP. Please wait 15 minutes before sending another message.',
+  },
+});

@@ -4,8 +4,9 @@
  * and 'X-Requested-With' header for CSRF protection.
  */
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL ||
+  'http://localhost:5000';
 export interface ApiProblemDetails {
   type: string;
   title: string;
@@ -208,6 +209,36 @@ export const adminApi = {
   deleteProject: async (id: string) => {
     return request<{ success: boolean; message: string }>(`/api/v1/admin/projects/${encodeURIComponent(id)}`, {
       method: 'DELETE',
+    });
+  },
+};
+
+// ----------------------------------------------------
+// Contact Form APIs
+// ----------------------------------------------------
+
+export interface ContactFormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+export interface ContactSubmitResponse {
+  success: boolean;
+  message: string;
+  id?: string;
+  delivery?: {
+    status: 'sent' | 'pending';
+    note?: string;
+  };
+}
+
+export const contactApi = {
+  submit: async (data: ContactFormData) => {
+    return request<ContactSubmitResponse>('/api/v1/contact', {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
   },
 };

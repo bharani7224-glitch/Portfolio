@@ -16,6 +16,9 @@ export const ENV = {
   ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'admin@bharani.dev',
   ADMIN_INITIAL_PASSWORD: process.env.ADMIN_INITIAL_PASSWORD || '',
   IS_PRODUCTION: process.env.NODE_ENV === 'production',
+  RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+  CONTACT_NOTIFICATION_EMAIL: process.env.CONTACT_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || 'admin@bharani.dev',
+  RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
 };
 
 // Validate critical secrets in production

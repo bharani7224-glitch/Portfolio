@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.routes.js';
 import publicProjectRoutes from './routes/publicProject.routes.js';
 import adminProjectRoutes from './routes/adminProject.routes.js';
 import healthRoutes from './routes/health.routes.js';
+import contactRoutes from './routes/contact.routes.js';
 
 export const app = express();
 
@@ -102,6 +103,7 @@ app.use('/health', healthRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/projects', publicProjectRoutes);
 app.use('/api/v1/admin/projects', adminProjectRoutes);
+app.use('/api/v1/contact', contactRoutes);
 
 // 404 Route Handler
 app.use((req: Request, res: Response) => {
