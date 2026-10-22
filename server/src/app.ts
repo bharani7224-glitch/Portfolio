@@ -13,6 +13,11 @@ import healthRoutes from './routes/health.routes.js';
 
 export const app = express();
 
+// Trust reverse proxy (e.g., Render, Nginx) for accurate IP resolution and secure cookie handling in production
+if (ENV.IS_PRODUCTION) {
+  app.set('trust proxy', 1);
+}
+
 // Security HTTP headers
 app.use(
   helmet({

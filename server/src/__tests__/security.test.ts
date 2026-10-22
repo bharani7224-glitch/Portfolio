@@ -251,5 +251,12 @@ describe('Phase 1 Security Controls Audit & Regressions', () => {
         delete process.env.LOGIN_RATE_LIMIT;
       }
     });
+
+    it('verifies trust proxy configuration aligns with production topology', () => {
+      // In non-production test environment, trust proxy should not be enabled by default
+      if (!ENV.IS_PRODUCTION) {
+        expect(app.get('trust proxy')).toBeFalsy();
+      }
+    });
   });
 });

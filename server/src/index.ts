@@ -11,8 +11,8 @@ async function bootstrap() {
     await connectDB();
     console.log('Connected to MongoDB successfully.');
 
-    const server = app.listen(ENV.PORT, () => {
-      console.log(`Portfolio CMS API running on port ${ENV.PORT} [${ENV.NODE_ENV}]`);
+    const server = app.listen(ENV.PORT, '0.0.0.0', () => {
+      console.log(`Portfolio CMS API running on port ${ENV.PORT} (0.0.0.0) [${ENV.NODE_ENV}]`);
     });
 
     const shutdown = async (signal: string) => {
