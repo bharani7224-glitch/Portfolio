@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useTheme } from './context/ThemeContext';
-import { Navbar } from './components/Navbar';
-import { HeroSection } from './sections/HeroSection';
-import { EducationSection } from './sections/EducationSection';
-import { ProjectsSection } from './sections/ProjectsSection';
-import { AboutSection } from './sections/AboutSection';
-import { ContactSection } from './sections/ContactSection';
-import { GravityStarsCanvas } from './components/GravityStarsCanvas';
-import { ParticleNetworkCanvas } from './components/ParticleNetworkCanvas';
-import { Mail, Phone, MapPin, ArrowUpRight, ArrowUp } from 'lucide-react';
-import { Github, Linkedin } from './components/SocialIcons';
-import { PORTFOLIO_DATA } from './portfolioData';
-import './App.css';
+import { useTheme } from '../context/ThemeContext';
+import { Navbar } from '../components/Navbar';
+import { HeroSection } from '../sections/HeroSection';
+import { EducationSection } from '../sections/EducationSection';
+import { ProjectsSection } from '../sections/ProjectsSection';
+import { AboutSection } from '../sections/AboutSection';
+import { ContactSection } from '../sections/ContactSection';
+import { GravityStarsCanvas } from '../components/GravityStarsCanvas';
+import { ParticleNetworkCanvas } from '../components/ParticleNetworkCanvas';
+import { Mail, Phone, MapPin, ArrowUpRight, ArrowUp, Lock } from 'lucide-react';
+import { Github, Linkedin } from '../components/SocialIcons';
+import { PORTFOLIO_DATA } from '../portfolioData';
+import { Link } from 'react-router-dom';
+import '../App.css';
 
 const scrollTo = (id: string) =>
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -24,7 +25,7 @@ const NAV_LINKS = [
   { label: 'Contact',   id: 'contact' },
 ];
 
-function App() {
+export const PortfolioPage = () => {
   const { theme } = useTheme();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const profile = PORTFOLIO_DATA.profile;
@@ -109,6 +110,12 @@ function App() {
                     </button>
                   </li>
                 ))}
+                <li>
+                  <Link to="/admin" className="footer-link" style={{ opacity: 0.7 }}>
+                    <Lock size={12} />
+                    Admin CMS
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -160,6 +167,4 @@ function App() {
       </button>
     </>
   );
-}
-
-export default App;
+};

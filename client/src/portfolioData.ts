@@ -22,7 +22,7 @@ export interface TimelineEntry {
 }
 
 export interface ProjectEntry {
-  id: number;
+  id: number | string;
   title: string;
   shortDesc: string;
   longDesc: string;
@@ -151,7 +151,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: 2,
-      title: 'Ledze Plus ERP',
+      title: 'Purchase Tracker (ERP)',
       shortDesc: 'An enterprise ERP application designed to streamline purchase and sales operations through approval-based workflows, quotation management, order processing, and invoice management.',
       longDesc: 'An enterprise ERP application designed to streamline purchase and sales operations through approval-based workflows, quotation management, order processing, and invoice management. Integrates department authorization hierarchies, quotation life cycles, and reliable REST API data operations with PostgreSQL.',
       category: 'fullstack' as const,
@@ -170,7 +170,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: 3,
-      title: 'LedzeePlus OCR – InvoiceFlow',
+      title: 'InvoiceFlow (OCR Automation)',
       shortDesc: 'An invoice automation solution that processes PDF and image-based invoices, extracts structured invoice information through an OCR service, and tracks processing status and audit history.',
       longDesc: 'An invoice automation solution that processes PDF and image-based invoices, extracts structured invoice information through an OCR service, and tracks processing status and audit history. Built with multi-file validation, asynchronous background queues, OCR parsing, and tenant-aware access control.',
       category: 'systems' as const,
