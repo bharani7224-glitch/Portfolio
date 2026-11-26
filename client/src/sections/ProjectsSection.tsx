@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, X, Sparkles, Filter, Layers, Server, Loader2 } from 'lucide-react';
+import { ExternalLink, X, ArrowUpRight, Loader2 } from 'lucide-react';
 import { Github } from '../components/SocialIcons';
-import { ScrollReveal } from '../components/ScrollReveal';
 import { PORTFOLIO_DATA } from '../portfolioData';
 import type { ProjectEntry } from '../portfolioData';
 import { publicApi } from '../services/api';
@@ -9,10 +8,10 @@ import type { ProjectDto } from '../services/api';
 import './ProjectsSection.css';
 
 const FILTERS = [
-  { key: 'all', label: 'All Work', icon: <Sparkles size={13} /> },
-  { key: 'frontend', label: 'Frontend', icon: <Layers size={13} /> },
-  { key: 'fullstack', label: 'Full Stack', icon: <Server size={13} /> },
-  { key: 'systems', label: 'Systems', icon: <Filter size={13} /> },
+  { key: 'all', label: 'ALL DEPLOYMENTS', index: '[00]' },
+  { key: 'fullstack', label: 'FULL STACK', index: '[01]' },
+  { key: 'systems', label: 'SYSTEMS & OCR', index: '[02]' },
+  { key: 'frontend', label: 'CLIENT FRONTEND', index: '[03]' },
 ] as const;
 
 function mapDtoToProjectEntry(dto: ProjectDto): ProjectEntry {
@@ -21,8 +20,8 @@ function mapDtoToProjectEntry(dto: ProjectDto): ProjectEntry {
     title: dto.title,
     shortDesc: dto.shortDescription,
     longDesc: dto.description,
-    category: (dto.category === 'frontend' || dto.category === 'systems' ? dto.category : 'fullstack') as any,
-    categoryLabel: dto.category ? dto.category.toUpperCase() : 'Full Stack',
+    category: (dto.category === 'frontend' || dto.category === 'systems' ? dto.category : 'fullstack') as ProjectEntry['category'],
+    categoryLabel: dto.category ? dto.category.toUpperCase() : 'FULL STACK',
     tags: dto.technologies || [],
     features: [
       dto.shortDescription,
@@ -30,7 +29,7 @@ function mapDtoToProjectEntry(dto: ProjectDto): ProjectEntry {
     ].filter(Boolean),
     demoUrl: dto.liveDemoUrl || undefined,
     githubUrl: dto.githubUrl || undefined,
-    highlights: dto.featured ? 'Featured Project' : (dto.category || 'Portfolio').toUpperCase(),
+    highlights: dto.featured ? 'FEATURED DEPLOYMENT' : (dto.category || 'SYSTEM').toUpperCase(),
     hasShine: dto.featured,
   };
 }
@@ -45,7 +44,6 @@ export const ProjectsSection: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true;
-    setIsLoading(true);
 
     publicApi
       .getProjects()
@@ -55,7 +53,6 @@ export const ProjectsSection: React.FC = () => {
           const mapped = res.data.map(mapDtoToProjectEntry);
           setProjects(mapped);
         } else {
-          // If database is connected but empty, use initial static portfolio projects as baseline
           setProjects(PORTFOLIO_DATA.projects);
         }
       })
@@ -76,60 +73,69 @@ export const ProjectsSection: React.FC = () => {
   const filtered = filter === 'all' ? projects : projects.filter((p) => p.category === filter);
 
   return (
-    <section id="projects" className="projects-section">
+    <section id="projects" className="swiss-projects-section">
       <div className="container">
-        <ScrollReveal animation="fade-up" triggerOnce>
-          <div className="section-header">
-            <h2>
-              Featured <span>Projects</span>
-            </h2>
-            <div className="section-divider" />
-            <p>
-              A curated selection of applications I've designed and engineered — focused on
-              performance, aesthetics, and clean code.
-            </p>
-          </div>
-        </ScrollReveal>
-
-        {/* Filters */}
-        <ScrollReveal animation="fade-up" delay={100} triggerOnce className="proj-filter-reveal">
-          <div className="proj-filter-row">
-            <div className="proj-filter-tabs">
-              {FILTERS.map(({ key, label, icon }) => (
-                <button
-                  key={key}
-                  className={`proj-filter-btn ${filter === key ? 'active' : ''}`}
-                  onClick={(e) => {
-                    setFilter(key as typeof filter);
-                    e.currentTarget.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'nearest',
-                      inline: 'center',
-                    });
-                  }}
-                >
-                  {icon} {label}
-                </button>
-              ))}
+        {/* Section Header */}
+        <div className="section-header">
+          <div>
+            <div className="mono-tag active mb-2">
+              <span className="status-indicator" />
+              <span>INDEX // PRODUCTION SYSTEMS</span>
             </div>
+            <h2>
+              SYSTEMS <span>LEDGER</span>
+            </h2>
           </div>
-        </ScrollReveal>
+          <p>
+            An institutional ledger of engineered architectures, full-stack logistics engines,
+            and high-throughput OCR automation pipelines.
+          </p>
+        </div>
+
+        {/* Filter Ledger Tabs */}
+        <div className="swiss-ledger-filter-row">
+          <div className="swiss-filter-tabs">
+            {FILTERS.map(({ key, label, index }) => (
+              <button
+                key={key}
+                className={`swiss-filter-btn ${filter === key ? 'active' : ''}`}
+                onClick={() => setFilter(key as typeof filter)}
+              >
+                <span className="filter-idx">{index}</span>
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+          <div className="mono-tag text-muted">
+            ENTRIES: [{String(filtered.length).padStart(2, '0')}]
+          </div>
+        </div>
 
         {/* Loading Indicator */}
         {isLoading && (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255, 255, 255, 0.6)' }}>
-            <Loader2 size={28} className="animate-spin" style={{ margin: '0 auto 8px auto', color: 'var(--accent, #6366f1)' }} />
-            <p style={{ fontSize: '0.85rem' }}>Loading live projects...</p>
+          <div className="swiss-ledger-loading">
+            <Loader2 size={24} className="animate-spin text-emerald" />
+            <span className="mono-tag">SYNCHRONIZING REPOSITORY LEDGER...</span>
           </div>
         )}
 
-        {/* Grid */}
+        {/* Swiss Institutional Ledger Table */}
         {!isLoading && (
-          <div className="proj-grid">
-            {filtered.map((project, idx) => (
-              <ScrollReveal key={project.id} animation="fade-up" delay={idx * 120} triggerOnce>
+          <div className="swiss-ledger-table">
+            <div className="swiss-ledger-head">
+              <div className="col-idx">INDEX</div>
+              <div className="col-title">SYSTEM DESIGNATION</div>
+              <div className="col-desc">SPECIFICATION SUMMARY</div>
+              <div className="col-stack">TECH STACK</div>
+              <div className="col-action">INSPECTION</div>
+            </div>
+
+            {filtered.map((project, idx) => {
+              const formattedIndex = String(idx + 1).padStart(2, '0');
+              return (
                 <div
-                  className={`proj-card ${project.hasShine ? 'proj-card-shine' : ''}`}
+                  key={project.id}
+                  className="swiss-ledger-row swiss-corner"
                   onClick={() => setSelected(project)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -139,88 +145,101 @@ export const ProjectsSection: React.FC = () => {
                   }}
                   tabIndex={0}
                   role="button"
-                  aria-label={`View details for ${project.title}`}
+                  aria-label={`Inspect specification for ${project.title}`}
                 >
-                  <div className="proj-card-accent" />
-
-                  <div className="proj-badge">
-                    <Sparkles size={11} /> {project.highlights}
+                  <div className="col-idx">
+                    <span className="ledger-num">[{formattedIndex}]</span>
                   </div>
 
-                  <h3 className="proj-title">{project.title}</h3>
-                  <p className="proj-desc">{project.shortDesc}</p>
-
-                  <div className="proj-tags">
-                    {project.tags.slice(0, 3).map((tag, i) => (
-                      <span key={i} className="proj-tag">
-                        {tag}
-                      </span>
-                    ))}
-                    {project.tags.length > 3 && (
-                      <span className="proj-tag-more">+{project.tags.length - 3}</span>
-                    )}
+                  <div className="col-title">
+                    <div className="ledger-category-tag">{project.highlights}</div>
+                    <h3 className="ledger-title">{project.title}</h3>
                   </div>
 
-                  <div className="proj-footer">
-                    <span className="proj-read-more">View Details →</span>
-                    <span className="proj-category-badge">{project.category}</span>
+                  <div className="col-desc">
+                    <p className="ledger-desc-text">{project.shortDesc}</p>
+                  </div>
+
+                  <div className="col-stack">
+                    <div className="ledger-tags-wrap">
+                      {project.tags.map((tag, i) => (
+                        <span key={i} className="ledger-tech-token">
+                          [{tag}]
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="col-action">
+                    <span className="ledger-action-btn">
+                      <span>INSPECT</span>
+                      <ArrowUpRight size={14} />
+                    </span>
                   </div>
                 </div>
-              </ScrollReveal>
-            ))}
+              );
+            })}
 
             {filtered.length === 0 && (
-              <div className="proj-empty">No projects in this category yet.</div>
+              <div className="swiss-ledger-empty">
+                <span className="mono-tag">NO RECORDS CATALOGED IN THIS CATEGORY</span>
+              </div>
             )}
           </div>
         )}
       </div>
 
-      {/* Modal */}
+      {/* Technical Inspection Modal */}
       {selected && (
         <div className="proj-modal-overlay" onClick={() => setSelected(null)}>
-          <div className="proj-modal animate-fade-in" onClick={(e) => e.stopPropagation()}>
-            <div className="proj-modal-accent" />
-            <button
-              className="proj-modal-close"
-              onClick={() => setSelected(null)}
-              aria-label="Close"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="proj-modal-header">
-              <span className="proj-modal-badge">
-                {(selected.categoryLabel || selected.category).toUpperCase()}
-              </span>
-              <h3>{selected.title}</h3>
+          <div className="swiss-modal swiss-corner" onClick={(e) => e.stopPropagation()}>
+            <div className="swiss-modal-header">
+              <div>
+                <span className="mono-tag active">
+                  <span className="status-indicator" /> SYSTEM AUDIT RECORD
+                </span>
+                <h3 className="swiss-modal-title">{selected.title}</h3>
+              </div>
+              <button
+                className="swiss-modal-close"
+                onClick={() => setSelected(null)}
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
             </div>
 
-            <div className="proj-modal-body">
-              <p className="proj-modal-desc">{selected.longDesc}</p>
+            <div className="swiss-modal-body">
+              <div className="swiss-modal-field">
+                <span className="field-label">DESIGNATION &amp; SCOPE</span>
+                <p className="field-value">{selected.longDesc}</p>
+              </div>
 
-              <div className="proj-modal-section">
-                <h4>Key Highlights</h4>
-                <ul>
+              <div className="swiss-modal-field">
+                <span className="field-label">CORE CAPABILITIES &amp; HIGHLIGHTS</span>
+                <ul className="swiss-modal-features">
                   {selected.features.map((f, i) => (
-                    <li key={i}>{f}</li>
+                    <li key={i}>
+                      <span className="feature-idx">[{String(i + 1).padStart(2, '0')}]</span>
+                      <span>{f}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="proj-modal-section">
-                <h4>Technologies Used</h4>
-                <div className="proj-tags">
+              <div className="swiss-modal-field">
+                <span className="field-label">TECHNOLOGY MATRICES</span>
+                <div className="ledger-tags-wrap">
                   {selected.tags.map((tag, i) => (
-                    <span key={i} className="proj-tag">
-                      {tag}
+                    <span key={i} className="ledger-tech-token active">
+                      [{tag}]
                     </span>
                   ))}
                 </div>
               </div>
 
               {(selected.demoUrl || selected.githubUrl) && (
-                <div className="proj-modal-actions">
+                <div className="swiss-modal-actions">
                   {selected.demoUrl && (
                     <a
                       href={selected.demoUrl}
@@ -228,7 +247,8 @@ export const ProjectsSection: React.FC = () => {
                       rel="noreferrer"
                       className="btn btn-primary"
                     >
-                      <ExternalLink size={16} /> Live Demo
+                      <ExternalLink size={15} />
+                      <span>LIVE SYSTEM DEMO</span>
                     </a>
                   )}
                   {selected.githubUrl && (
@@ -238,7 +258,8 @@ export const ProjectsSection: React.FC = () => {
                       rel="noreferrer"
                       className="btn btn-secondary"
                     >
-                      <Github size={16} /> Source Code
+                      <Github size={15} />
+                      <span>SOURCE REPOSITORY</span>
                     </a>
                   )}
                 </div>

@@ -1,38 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Code2 } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle';
+import { Menu, X } from 'lucide-react';
 import './Navbar.css';
 
 const NAV_ITEMS = [
-  { id: 'home',      label: 'Home' },
-  { id: 'education', label: 'Education' },
-  { id: 'projects',  label: 'Projects' },
-  { id: 'about',     label: 'About' },
-  { id: 'contact',   label: 'Contact' },
+  { id: 'home',      label: '[01] HOME' },
+  { id: 'education', label: '[02] EXPERIENCE' },
+  { id: 'projects',  label: '[03] PROJECTS' },
+  { id: 'about',     label: '[04] DOSSIER' },
+  { id: 'contact',   label: '[05] CONTACT' },
 ];
 
 export const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen]       = useState(false);
-  const [active, setActive]       = useState('home');
-  const [scrolled, setScrolled]   = useState(false);
+  const [isOpen, setIsOpen]     = useState(false);
+  const [active, setActive]     = useState('home');
+  const [scrolled, setScrolled] = useState(false);
 
-  // Track scroll to highlight the correct section
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
-      // Determine active section
       const offsets = NAV_ITEMS.map(({ id }) => {
         const el = document.getElementById(id);
         return el ? { id, top: el.getBoundingClientRect().top } : { id, top: Infinity };
       });
 
       const current = offsets
-        .filter(o => o.top <= 100)
+        .filter((o) => o.top <= 120)
         .sort((a, b) => b.top - a.top)[0];
 
       if (current) setActive(current.id);
-      else if (offsets[0]?.top > 100) setActive('home');
+      else if (offsets[0]?.top > 120) setActive('home');
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -46,75 +43,72 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-      <div className="navbar-container container">
-        {/* Logo */}
-        <div className="navbar-logo" onClick={() => scrollTo('home')}>
-          <div className="logo-icon">
-            <Code2 size={18} className="icon-gradient" />
-          </div>
-          <span className="logo-text">
-            Bharani<span>.dev</span>
+    <nav className={`swiss-navbar ${scrolled ? 'scrolled' : ''}`}>
+      <div className="container swiss-nav-container">
+        {/* Brand / Swiss Identification */}
+        <div className="swiss-nav-brand" onClick={() => scrollTo('home')}>
+          <span className="brand-title">BHARANI.DEV</span>
+          <span className="brand-status">
+            <span className="status-indicator" /> SYS.ACTIVE
           </span>
         </div>
 
-        {/* Desktop Links */}
-        <div className="navbar-links">
+        {/* Desktop Navigation Ledger */}
+        <div className="swiss-nav-links">
           {NAV_ITEMS.map(({ id, label }) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className={`nav-link ${active === id ? 'active' : ''}`}
+              className={`swiss-nav-link ${active === id ? 'active' : ''}`}
             >
               {label}
-              {active === id && <span className="active-dot" />}
             </button>
           ))}
         </div>
 
-        {/* Desktop Actions: Theme Toggle & CTA */}
-        <div className="navbar-actions">
-          <ThemeToggle />
+        {/* Institutional Contact Action */}
+        <div className="swiss-nav-actions">
           <button
-            className="nav-cta btn btn-primary"
+            className="btn btn-primary nav-contact-btn"
             onClick={() => scrollTo('contact')}
           >
-            Hire Me
+            INITIATE CONTACT
           </button>
-        </div>
 
-        {/* Mobile Actions: Theme Toggle & Hamburger */}
-        <div className="mobile-header-actions">
-          <ThemeToggle className="mobile-theme-toggle" />
           <button
-            className="mobile-toggle"
+            className="swiss-mobile-toggle"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
+            aria-label="Toggle navigation"
           >
-            {isOpen ? <X size={22} /> : <Menu size={22} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer */}
-      <div className={`mobile-nav ${isOpen ? 'open' : ''}`}>
-        {NAV_ITEMS.map(({ id, label }) => (
-          <button
-            key={id}
-            onClick={() => scrollTo(id)}
-            className={`mobile-nav-link ${active === id ? 'active' : ''}`}
-          >
-            {label}
-          </button>
-        ))}
-        <div className="mobile-drawer-bottom">
-          <button
-            className="btn btn-primary mobile-cta"
-            onClick={() => scrollTo('contact')}
-          >
-            Hire Me
-          </button>
+      <div className={`swiss-mobile-drawer ${isOpen ? 'open' : ''}`}>
+        <div className="mobile-drawer-header">
+          <span className="mono-tag active">
+            <span className="status-indicator" /> NAVIGATION PROTOCOL
+          </span>
         </div>
+        <div className="mobile-links-stack">
+          {NAV_ITEMS.map(({ id, label }) => (
+            <button
+              key={id}
+              onClick={() => scrollTo(id)}
+              className={`swiss-mobile-link ${active === id ? 'active' : ''}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <button
+          className="btn btn-primary mobile-cta-btn"
+          onClick={() => scrollTo('contact')}
+        >
+          INITIATE CONTACT
+        </button>
       </div>
     </nav>
   );

@@ -1,120 +1,139 @@
-import React, { useState, useEffect } from 'react';
-import { MapPin, Mail, Phone, Monitor, Database, Cpu } from 'lucide-react';
+import React from 'react';
+import { MapPin, Mail, Phone, Server, Database, Layers, Check } from 'lucide-react';
 import bharaniImg from '../assets/bharani.jpg';
-import { ScrollReveal } from '../components/ScrollReveal';
 import { PORTFOLIO_DATA } from '../portfolioData';
 import './AboutSection.css';
 
-const serviceIcons = [
-  <Monitor key="net" size={22} />,
-  <Database key="db" size={22} />,
-  <Cpu key="fe" size={22} />
+const DELIVERABLE_ICONS = [
+  <Server key="srv" size={18} className="text-emerald" />,
+  <Database key="db" size={18} className="text-emerald" />,
+  <Layers key="fe" size={18} className="text-emerald" />,
 ];
 
 export const AboutSection: React.FC = () => {
-  const [animated, setAnimated] = useState(false);
   const profile = PORTFOLIO_DATA.profile;
   const skills = PORTFOLIO_DATA.skillsPyramid;
   const services = PORTFOLIO_DATA.services;
 
-  useEffect(() => {
-    const timer = setTimeout(() => setAnimated(true), 350);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <section id="about" className="about-section">
+    <section id="about" className="swiss-about-section">
       <div className="container">
-        <ScrollReveal animation="fade-up" triggerOnce>
-          <div className="section-header">
-            <h2>About <span>Me</span></h2>
-            <div className="section-divider" />
-            <p>Get to know my background, skills, and what I bring to every project.</p>
+        {/* Section Header */}
+        <div className="section-header">
+          <div>
+            <div className="mono-tag active mb-2">
+              <span className="status-indicator" />
+              <span>DOSSIER // SPECIFICATION</span>
+            </div>
+            <h2>
+              ENGINEERING <span>DOSSIER</span>
+            </h2>
           </div>
-        </ScrollReveal>
-
-        {/* Intro row */}
-        <div className="about-intro">
-          <ScrollReveal animation="fade-right" triggerOnce className="about-img-wrapper">
-            <div className="about-img-frame">
-              <div className="about-img-glow" />
-              <img src={bharaniImg} alt="Bharani" className="about-img" />
-              <div className="about-chip">
-                <span className="chip-dot-green" />
-                Open to Work
-              </div>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal animation="fade-left" delay={150} triggerOnce>
-            <div className="about-bio">
-              {/* <h3 className="about-bio-title">About <span>{profile.name}</span></h3> */}
-              <p className="about-bio-text">{profile.bioAbout1}</p>
-              <p className="about-bio-text">{profile.bioAbout2}</p>
-
-              <div className="about-info">
-                <div className="about-info-item">
-                  <MapPin size={16} className="info-icon" />
-                  <span>{profile.location}</span>
-                </div>
-                <div className="about-info-item">
-                  <Mail size={16} className="info-icon" />
-                  <a href={`mailto:${profile.email}`}>{profile.email}</a>
-                </div>
-                <div className="about-info-item">
-                  <Phone size={16} className="info-icon" />
-                  <a href={`tel:${profile.phone.replace(/\s+/g, '')}`}>{profile.phone}</a>
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
+          <p>
+            Comprehensive technical profile, architectural competencies, and core deliverables.
+          </p>
         </div>
 
-        {/* Skills */}
-        <div className="about-skills-block">
-          <ScrollReveal animation="fade-up" triggerOnce>
-            <h3 className="about-sub-title">Core <span>Skills</span></h3>
-          </ScrollReveal>
-          <ScrollReveal animation="fade-up" delay={100} triggerOnce>
-            <div className="skills-card">
-              {skills.map((skill, i) => (
-                <div key={i} className="skill-row">
-                  <div className="skill-row-header">
-                    <span className="skill-row-name">{skill.name}</span>
-                    <span className="skill-row-pct">{skill.proficiency}%</span>
-                  </div>
-                  <div className="skill-track">
-                    <div
-                      className="skill-fill"
-                      style={{
-                        width: animated ? `${skill.proficiency}%` : '0%',
-                        background: 'var(--accent-gradient)'
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
+        {/* Editorial Split Grid */}
+        <div className="swiss-about-grid">
+          {/* Left Column: Portrait & Telemetry Frame */}
+          <div className="swiss-portrait-card swiss-corner">
+            <div className="portrait-inner-frame">
+              <img src={bharaniImg} alt={profile.name} className="portrait-image" />
+              <div className="portrait-status-banner">
+                <span className="status-indicator" />
+                <span>ACTIVE // 10+ MONTHS EXP</span>
+              </div>
             </div>
-          </ScrollReveal>
-        </div>
 
-        {/* Services */}
-        <div className="about-services">
-          <ScrollReveal animation="fade-up" triggerOnce>
-            <h3 className="about-sub-title">What I <span>Deliver</span></h3>
-          </ScrollReveal>
-          <div className="services-grid">
-            {services.map((svc, i) => (
-              <ScrollReveal key={i} animation="fade-up" delay={i * 120} triggerOnce>
-                <div className="svc-card">
-                  <div className="svc-icon">
-                    {serviceIcons[i % serviceIcons.length]}
+            <div className="portrait-meta-stack">
+              <div className="meta-line">
+                <span className="meta-k">ENGINEER:</span>
+                <span className="meta-v">{profile.name.toUpperCase()}</span>
+              </div>
+              <div className="meta-line">
+                <span className="meta-k">LOCATION:</span>
+                <span className="meta-v">{profile.location.toUpperCase()}</span>
+              </div>
+              <div className="meta-line">
+                <span className="meta-k">COORDINATES:</span>
+                <span className="meta-v">11.3410° N, 77.7172° E</span>
+              </div>
+              <div className="meta-line">
+                <span className="meta-k">COMMUNICATION:</span>
+                <span className="meta-v text-emerald">{profile.email}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Bio & Deliverables */}
+          <div className="swiss-about-content">
+            <div className="content-block">
+              <span className="mono-tag">[01 // BIOGRAPHY STATEMENT]</span>
+              <p className="bio-lead">{profile.bioAbout1}</p>
+              <p className="bio-sub">{profile.bioAbout2}</p>
+            </div>
+
+            {/* Direct Contact Coordinates Bar */}
+            <div className="swiss-coords-bar">
+              <div className="coord-item">
+                <MapPin size={13} className="text-emerald" />
+                <span>{profile.location}</span>
+              </div>
+              <div className="coord-item">
+                <Mail size={13} className="text-emerald" />
+                <a href={`mailto:${profile.email}`}>{profile.email}</a>
+              </div>
+              <div className="coord-item">
+                <Phone size={13} className="text-emerald" />
+                <a href={`tel:${profile.phone.replace(/\s+/g, '')}`}>{profile.phone}</a>
+              </div>
+            </div>
+
+            {/* Core Competencies Matrix */}
+            <div className="content-block">
+              <div className="skills-header-bar">
+                <span className="mono-tag">[02 // CORE TECHNICAL CALIBER]</span>
+                <span className="mono-tag text-muted">AUDITED PROFICIENCY</span>
+              </div>
+              <div className="swiss-skills-ledger">
+                {skills.slice(0, 10).map((skill, i) => (
+                  <div key={i} className="skill-ledger-row">
+                    <div className="skill-label-side">
+                      <span className="skill-idx">[{String(i + 1).padStart(2, '0')}]</span>
+                      <span className="skill-name">{skill.name}</span>
+                    </div>
+                    <div className="skill-metric-side">
+                      <div className="skill-track-bar">
+                        <div className="skill-fill-bar" style={{ width: `${skill.proficiency}%` }} />
+                      </div>
+                      <span className="skill-pct-val">{skill.proficiency}%</span>
+                    </div>
                   </div>
-                  <h4 className="svc-title">{svc.title}</h4>
-                  <p className="svc-desc">{svc.description}</p>
-                </div>
-              </ScrollReveal>
-            ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Institutional Deliverables */}
+            <div className="content-block">
+              <span className="mono-tag">[03 // INSTITUTIONAL DELIVERABLES]</span>
+              <div className="swiss-services-grid">
+                {services.map((svc, i) => (
+                  <div key={i} className="swiss-service-module swiss-corner">
+                    <div className="service-header">
+                      {DELIVERABLE_ICONS[i % DELIVERABLE_ICONS.length]}
+                      <span className="service-idx">[03.{i + 1}]</span>
+                    </div>
+                    <h4 className="service-title">{svc.title}</h4>
+                    <p className="service-desc">{svc.description}</p>
+                    <div className="service-footer">
+                      <Check size={12} className="text-emerald" />
+                      <span>PRODUCTION GRADE</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

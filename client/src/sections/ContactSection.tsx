@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Github, Linkedin } from '../components/SocialIcons';
-import { ScrollReveal } from '../components/ScrollReveal';
 import { PORTFOLIO_DATA } from '../portfolioData';
 import { contactApi, ApiError } from '../services/api';
 import './ContactSection.css';
@@ -29,46 +28,25 @@ export const ContactSection: React.FC = () => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [successNote, setSuccessNote] = useState<string | null>(null);
 
-  const contactCards = [
-    {
-      icon: <Mail size={20} />,
-      label: 'Email',
-      value: profile.email,
-      href: `mailto:${profile.email}`,
-    },
-    {
-      icon: <Phone size={20} />,
-      label: 'Phone',
-      value: profile.phone,
-      href: `tel:${profile.phone.replace(/\s+/g, '')}`,
-    },
-    {
-      icon: <MapPin size={20} />,
-      label: 'Location',
-      value: profile.location,
-      href: '#',
-    },
-  ];
-
-  const githubSocial = profile.socials.find(s => s.platform === 'GitHub');
-  const linkedinSocial = profile.socials.find(s => s.platform === 'LinkedIn');
+  const githubSocial = profile.socials.find((s) => s.platform === 'GitHub');
+  const linkedinSocial = profile.socials.find((s) => s.platform === 'LinkedIn');
 
   const validate = (): boolean => {
     const e: FormErrors = {};
-    if (!form.name.trim()) e.name = 'Name is required.';
-    if (!form.email.trim()) e.email = 'Email is required.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email address.';
-    if (!form.subject.trim()) e.subject = 'Subject is required.';
-    if (!form.message.trim()) e.message = 'Message cannot be empty.';
-    else if (form.message.trim().length < 10) e.message = 'Message must be at least 10 characters.';
+    if (!form.name.trim()) e.name = 'FIELD_REQUIRED: Full Name';
+    if (!form.email.trim()) e.email = 'FIELD_REQUIRED: Email Address';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'INVALID_FORMAT: Enter valid email';
+    if (!form.subject.trim()) e.subject = 'FIELD_REQUIRED: Subject line';
+    if (!form.message.trim()) e.message = 'FIELD_REQUIRED: Message body';
+    else if (form.message.trim().length < 10) e.message = 'LENGTH_REQUIREMENT: Minimum 10 characters';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setForm(p => ({ ...p, [name]: value }));
-    if (errors[name as keyof FormErrors]) setErrors(p => ({ ...p, [name]: undefined }));
+    setForm((p) => ({ ...p, [name]: value }));
+    if (errors[name as keyof FormErrors]) setErrors((p) => ({ ...p, [name]: undefined }));
     if (serverError) setServerError(null);
   };
 
@@ -94,7 +72,7 @@ export const ContactSection: React.FC = () => {
         setSubmitSuccess(false);
         setSuccessNote(null);
       }, 7000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err instanceof ApiError && err.problem) {
         if (err.problem.errors) {
           const fieldErrors: FormErrors = {};
@@ -104,9 +82,9 @@ export const ContactSection: React.FC = () => {
           if (err.problem.errors.message) fieldErrors.message = err.problem.errors.message[0];
           setErrors(fieldErrors);
         }
-        setServerError(err.problem.detail || 'Failed to submit contact message.');
+        setServerError(err.problem.detail || 'Dispatch failed on server endpoint.');
       } else {
-        setServerError('Unable to reach server. Please check your internet connection or email directly.');
+        setServerError('Server unreachable. Please dispatch email directly to bharani7224@gmail.com.');
       }
     } finally {
       setIsSubmitting(false);
@@ -114,149 +92,200 @@ export const ContactSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="contact-section">
+    <section id="contact" className="swiss-contact-section">
       <div className="container">
-        <ScrollReveal animation="fade-up" triggerOnce>
-          <div className="section-header">
-            <h2>Get In <span>Touch</span></h2>
-            <div className="section-divider" />
-            <p>Have a project in mind or a job opportunity? I'd love to hear from you — let's build something great together.</p>
+        {/* Section Header */}
+        <div className="section-header">
+          <div>
+            <div className="mono-tag active mb-2">
+              <span className="status-indicator" />
+              <span>TERMINAL // COMMUNICATION</span>
+            </div>
+            <h2>
+              INITIATE <span>COMMUNICATION</span>
+            </h2>
           </div>
-        </ScrollReveal>
+          <p>
+            Secure institutional channel for full-time engineering appointments, enterprise contracts, and technical advisory.
+          </p>
+        </div>
 
-        <div className="contact-grid">
-          {/* Left: Info */}
-          <ScrollReveal animation="fade-right" triggerOnce>
-            <div className="contact-info-col">
-              <h3 className="contact-info-title">Let's talk 👋</h3>
-              <p className="contact-info-text">
-                I'm currently available for freelance work, full-time roles, or interesting project collaborations. Don't hesitate to reach out!
-              </p>
-
-              <div className="contact-cards">
-                {contactCards.map(({ icon, label, value, href }) => (
-                  <a key={label} href={href} className="contact-info-card">
-                    <div className="ci-icon">{icon}</div>
-                    <div>
-                      <span className="ci-label">{label}</span>
-                      <span className="ci-value">{value}</span>
-                    </div>
-                  </a>
-                ))}
+        {/* Split Grid */}
+        <div className="swiss-contact-grid">
+          {/* Left Column: Direct Communication Ledger */}
+          <div className="swiss-contact-info-col">
+            <div className="swiss-channel-card swiss-corner">
+              <div className="channel-card-head">
+                <span className="mono-tag active">[01 // VERIFIED CHANNELS]</span>
+                <span className="mono-tag text-muted">PGP // DIRECT</span>
               </div>
 
-              {/* Social links */}
-              <div className="contact-socials">
+              <div className="channel-list">
+                <a href={`mailto:${profile.email}`} className="channel-row">
+                  <div className="channel-icon-box">
+                    <Mail size={16} />
+                  </div>
+                  <div className="channel-details">
+                    <span className="channel-label">ELECTRONIC MAIL:</span>
+                    <span className="channel-value">{profile.email}</span>
+                  </div>
+                </a>
+
+                <a href={`tel:${profile.phone.replace(/\s+/g, '')}`} className="channel-row">
+                  <div className="channel-icon-box">
+                    <Phone size={16} />
+                  </div>
+                  <div className="channel-details">
+                    <span className="channel-label">DIRECT LINE:</span>
+                    <span className="channel-value">{profile.phone}</span>
+                  </div>
+                </a>
+
+                <div className="channel-row">
+                  <div className="channel-icon-box">
+                    <MapPin size={16} />
+                  </div>
+                  <div className="channel-details">
+                    <span className="channel-label">STATION &amp; JURISDICTION:</span>
+                    <span className="channel-value">{profile.location}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Public Repositories & Profiles */}
+              <div className="channel-socials-grid">
                 {githubSocial && (
-                  <a href={githubSocial.url} target="_blank" rel="noreferrer" aria-label="GitHub" className="contact-social-btn">
-                    <Github size={18} /> GitHub
+                  <a
+                    href={githubSocial.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="swiss-social-btn"
+                  >
+                    <Github size={15} />
+                    <span>GITHUB // CODE</span>
                   </a>
                 )}
                 {linkedinSocial && (
-                  <a href={linkedinSocial.url} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="contact-social-btn linkedin">
-                    <Linkedin size={18} /> LinkedIn
+                  <a
+                    href={linkedinSocial.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="swiss-social-btn"
+                  >
+                    <Linkedin size={15} />
+                    <span>LINKEDIN // VERIFIED</span>
                   </a>
                 )}
               </div>
             </div>
-          </ScrollReveal>
+          </div>
 
-          {/* Right: Form */}
-          <ScrollReveal animation="fade-left" delay={150} triggerOnce>
-            <div className="contact-form-card">
+          {/* Right Column: Architectural Transmission Form */}
+          <div className="swiss-contact-form-col">
+            <div className="swiss-form-card swiss-corner">
+              <div className="form-card-head">
+                <span className="mono-tag">[02 // TRANSMISSION PROTOCOL]</span>
+                <span className="mono-tag active">ENCRYPTION // STANDARD</span>
+              </div>
+
               {submitSuccess ? (
-                <div className="contact-success">
-                  <div className="success-ring">
-                    <CheckCircle size={40} />
-                  </div>
-                  <h3>Message Sent!</h3>
-                  <p>Thank you for reaching out. Bharani will get back to you shortly.</p>
-                  {successNote && (
-                    <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '0.5rem' }}>
-                      {successNote}
-                    </p>
-                  )}
+                <div className="swiss-form-success">
+                  <CheckCircle2 size={36} className="text-emerald" />
+                  <h3>TRANSMISSION CONFIRMED</h3>
+                  <p>Your message has been logged in the direct message queue. Expect an engineered response shortly.</p>
+                  {successNote && <span className="mono-tag text-muted">{successNote}</span>}
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate className="contact-form">
+                <form onSubmit={handleSubmit} noValidate className="swiss-form">
                   {serverError && (
-                    <div
-                      style={{
-                        padding: '10px 14px',
-                        marginBottom: '1rem',
-                        borderRadius: '8px',
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        border: '1px solid rgba(239, 68, 68, 0.3)',
-                        color: '#ef4444',
-                        fontSize: '0.875rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                      }}
-                      role="alert"
-                    >
-                      <AlertCircle size={16} />
+                    <div className="swiss-form-alert" role="alert">
+                      <AlertCircle size={15} />
                       <span>{serverError}</span>
                     </div>
                   )}
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="name">Full Name</label>
+
+                  <div className="swiss-form-row">
+                    <div className="swiss-field">
+                      <label htmlFor="name" className="field-mono-label">
+                        [01] FULL NAME
+                      </label>
                       <input
-                        type="text" id="name" name="name"
-                        value={form.name} onChange={handleChange}
-                        placeholder="John Doe"
-                        className={errors.name ? 'error' : ''}
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        placeholder="e.g. Alexander Vance"
+                        className={`swiss-input ${errors.name ? 'error' : ''}`}
                         disabled={isSubmitting}
                       />
-                      {errors.name && <span className="form-error"><AlertCircle size={12} /> {errors.name}</span>}
+                      {errors.name && <span className="swiss-err-msg">{errors.name}</span>}
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="email">Email Address</label>
+
+                    <div className="swiss-field">
+                      <label htmlFor="email" className="field-mono-label">
+                        [02] CORPORATE EMAIL
+                      </label>
                       <input
-                        type="email" id="email" name="email"
-                        value={form.email} onChange={handleChange}
-                        placeholder="john@example.com"
-                        className={errors.email ? 'error' : ''}
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        placeholder="e.g. vance@institution.ch"
+                        className={`swiss-input ${errors.email ? 'error' : ''}`}
                         disabled={isSubmitting}
                       />
-                      {errors.email && <span className="form-error"><AlertCircle size={12} /> {errors.email}</span>}
+                      {errors.email && <span className="swiss-err-msg">{errors.email}</span>}
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="subject">Subject</label>
+                  <div className="swiss-field">
+                    <label htmlFor="subject" className="field-mono-label">
+                      [03] SUBJECT SPECIFICATION
+                    </label>
                     <input
-                      type="text" id="subject" name="subject"
-                      value={form.subject} onChange={handleChange}
-                      placeholder="Project Collaboration"
-                      className={errors.subject ? 'error' : ''}
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={form.subject}
+                      onChange={handleChange}
+                      placeholder="e.g. High-Throughput .NET Architecture Collaboration"
+                      className={`swiss-input ${errors.subject ? 'error' : ''}`}
                       disabled={isSubmitting}
                     />
-                    {errors.subject && <span className="form-error"><AlertCircle size={12} /> {errors.subject}</span>}
+                    {errors.subject && <span className="swiss-err-msg">{errors.subject}</span>}
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="message">Message</label>
+                  <div className="swiss-field">
+                    <label htmlFor="message" className="field-mono-label">
+                      [04] PROJECT BRIEF &amp; REQUIREMENTS
+                    </label>
                     <textarea
-                      id="message" name="message"
-                      value={form.message} onChange={handleChange}
+                      id="message"
+                      name="message"
                       rows={5}
-                      placeholder="Hey Bharani, let's collaborate on..."
-                      className={errors.message ? 'error' : ''}
+                      value={form.message}
+                      onChange={handleChange}
+                      placeholder="Specify project parameters, architectural scope, and timelines..."
+                      className={`swiss-input ${errors.message ? 'error' : ''}`}
                       disabled={isSubmitting}
                     />
-                    {errors.message && <span className="form-error"><AlertCircle size={12} /> {errors.message}</span>}
+                    {errors.message && <span className="swiss-err-msg">{errors.message}</span>}
                   </div>
 
-                  <button type="submit" className="btn btn-primary btn-send" disabled={isSubmitting}>
-                    {isSubmitting ? 'Sending...' : 'Send Message'}
-                    <Send size={15} />
+                  <button
+                    type="submit"
+                    className="btn btn-primary swiss-submit-btn"
+                    disabled={isSubmitting}
+                  >
+                    <span>{isSubmitting ? 'TRANSMITTING PACKET...' : 'TRANSMIT SPECIFICATION'}</span>
+                    <Send size={14} />
                   </button>
                 </form>
               )}
             </div>
-          </ScrollReveal>
+          </div>
         </div>
       </div>
     </section>

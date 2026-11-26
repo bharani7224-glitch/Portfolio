@@ -1,84 +1,87 @@
 import React from 'react';
-import { GraduationCap, Briefcase, Calendar, MapPin } from 'lucide-react';
-import { ScrollReveal } from '../components/ScrollReveal';
+import { Calendar, MapPin, Building2, CheckCircle2 } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../portfolioData';
 import type { TimelineEntry } from '../portfolioData';
 import './EducationSection.css';
 
-interface TimelineCardProps {
-  item: TimelineEntry;
-  delay?: number;
-}
-
-const TimelineCard: React.FC<TimelineCardProps> = ({ item, delay = 0 }) => {
-  const isEdu = item.type === 'education';
-
+const TimelineRow: React.FC<{ item: TimelineEntry; index: string }> = ({ item, index }) => {
   return (
-    <ScrollReveal animation="fade-up" delay={delay} triggerOnce>
-      <div className={`edu-card ${isEdu ? 'study-card' : 'work-card'}`}>
-        <div className="edu-card-icon">
-          {isEdu ? <GraduationCap size={20} /> : <Briefcase size={20} />}
+    <div className="swiss-timeline-entry swiss-corner">
+      <div className="entry-header">
+        <div className="entry-meta">
+          <span className="mono-tag active">
+            <span className="status-indicator" /> {index}
+          </span>
+          <span className="entry-period">
+            <Calendar size={12} /> {item.period}
+          </span>
         </div>
-        <div className="edu-card-body">
-          <div className="edu-card-meta">
-            <span className="edu-period">
-              <Calendar size={12} /> {item.period}
-            </span>
-            <span className="edu-location">
-              <MapPin size={12} /> {item.location}
-            </span>
-          </div>
-          <h4 className="edu-title">{item.title}</h4>
-          <span className="edu-institution">{item.institution}</span>
-          <p className="edu-desc">{item.description}</p>
-          {item.grade && (
-            <span className="edu-grade">{item.grade}</span>
-          )}
-        </div>
+        {item.grade && (
+          <span className="entry-grade-badge">
+            <CheckCircle2 size={12} /> {item.grade}
+          </span>
+        )}
       </div>
-    </ScrollReveal>
+
+      <h4 className="entry-title">{item.title}</h4>
+
+      <div className="entry-institution">
+        <Building2 size={13} />
+        <span>{item.institution}</span>
+        <span className="text-muted">//</span>
+        <MapPin size={12} />
+        <span>{item.location}</span>
+      </div>
+
+      <p className="entry-desc">{item.description}</p>
+    </div>
   );
 };
 
 export const EducationSection: React.FC = () => {
   return (
-    <section id="education" className="education-section">
+    <section id="education" className="swiss-edu-section">
       <div className="container">
-        <ScrollReveal animation="fade-up" triggerOnce>
-          <div className="section-header">
-            <h2>Education & <span>Experience</span></h2>
-            <div className="section-divider" />
-            <p>My academic foundation and professional journey that shaped my skills.</p>
+        {/* Section Header */}
+        <div className="section-header">
+          <div>
+            <div className="mono-tag active mb-2">
+              <span className="status-indicator" />
+              <span>DOSSIER // CHRONOLOGY</span>
+            </div>
+            <h2>
+              RECORD &amp; <span>DEPLOYMENT</span>
+            </h2>
           </div>
-        </ScrollReveal>
+          <p>
+            Academic background and institutional software engineering deployments across full-stack production environments.
+          </p>
+        </div>
 
-        <div className="edu-grid">
-          {/* Education Column */}
-          <div className="edu-column">
-            <ScrollReveal animation="fade-right" triggerOnce>
-              <div className="edu-column-label">
-                <GraduationCap size={16} />
-                Education
-              </div>
-            </ScrollReveal>
-            <div className="edu-timeline">
+        {/* 2-Column Swiss Grid */}
+        <div className="swiss-edu-grid">
+          {/* Column 1: Academic Foundation */}
+          <div className="swiss-edu-col">
+            <div className="col-label-bar">
+              <span className="mono-tag">[01 // ACADEMIC RECORD]</span>
+              <span className="mono-tag text-muted">VERIFIED DEGREES</span>
+            </div>
+            <div className="timeline-stack">
               {PORTFOLIO_DATA.education.map((item, i) => (
-                <TimelineCard key={i} item={item} delay={i * 150} />
+                <TimelineRow key={i} item={item} index={`ACAD // 0${i + 1}`} />
               ))}
             </div>
           </div>
 
-          {/* Experience Column */}
-          <div className="edu-column">
-            <ScrollReveal animation="fade-left" triggerOnce>
-              <div className="edu-column-label work">
-                <Briefcase size={16} />
-                Experience
-              </div>
-            </ScrollReveal>
-            <div className="edu-timeline">
+          {/* Column 2: Industrial Deployment */}
+          <div className="swiss-edu-col">
+            <div className="col-label-bar">
+              <span className="mono-tag active">[02 // INDUSTRIAL DEPLOYMENT]</span>
+              <span className="mono-tag text-muted">PRODUCTION EXPERIENCE</span>
+            </div>
+            <div className="timeline-stack">
               {PORTFOLIO_DATA.experience.map((item, i) => (
-                <TimelineCard key={i} item={item} delay={i * 150} />
+                <TimelineRow key={i} item={item} index={`PROD // 0${i + 1}`} />
               ))}
             </div>
           </div>

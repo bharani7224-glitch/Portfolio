@@ -1,45 +1,64 @@
 import { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from '../components/Navbar';
 import { HeroSection } from '../sections/HeroSection';
 import { EducationSection } from '../sections/EducationSection';
 import { ProjectsSection } from '../sections/ProjectsSection';
 import { AboutSection } from '../sections/AboutSection';
 import { ContactSection } from '../sections/ContactSection';
-import { GravityStarsCanvas } from '../components/GravityStarsCanvas';
-import { ParticleNetworkCanvas } from '../components/ParticleNetworkCanvas';
+import { SceneCanvas } from '../components/canvas/SceneCanvas';
 import { Mail, Phone, MapPin, ArrowUpRight, ArrowUp, Lock } from 'lucide-react';
 import { Github, Linkedin } from '../components/SocialIcons';
 import { PORTFOLIO_DATA } from '../portfolioData';
 import { Link } from 'react-router-dom';
 import '../App.css';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const scrollTo = (id: string) =>
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
 const NAV_LINKS = [
-  { label: 'Home',      id: 'home' },
-  { label: 'Education', id: 'education' },
-  { label: 'Projects',  id: 'projects' },
-  { label: 'About',     id: 'about' },
-  { label: 'Contact',   id: 'contact' },
+  { label: '[01] HOME',      id: 'home' },
+  { label: '[02] EXPERIENCE', id: 'education' },
+  { label: '[03] PROJECTS',  id: 'projects' },
+  { label: '[04] DOSSIER',     id: 'about' },
+  { label: '[05] CONTACT',   id: 'contact' },
 ];
 
 export const PortfolioPage = () => {
-  const { theme } = useTheme();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const profile = PORTFOLIO_DATA.profile;
 
+  // Initialize Lenis ultra-silky smooth inertial scrolling
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 400) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
-      }
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+
+    const updateLenis = (time: number) => {
+      lenis.raf(time * 1000);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    gsap.ticker.add(updateLenis);
+    gsap.ticker.lagSmoothing(0);
+
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      gsap.ticker.remove(updateLenis);
+      window.removeEventListener('scroll', handleScroll);
+      lenis.destroy();
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -48,10 +67,21 @@ export const PortfolioPage = () => {
 
   return (
     <>
-      {theme === 'dark' ? <GravityStarsCanvas /> : <ParticleNetworkCanvas />}
+      {/* Precision 3D WebGL Torus-Monolith Artifact */}
+      <SceneCanvas />
       <Navbar />
-      <main>
+      <main className="relative z-10">
         <HeroSection />
+
+        {/* Swiss Precision Marquee Ticker */}
+        <div className="swiss-ticker" aria-hidden="true">
+          <div className="swiss-ticker-track">
+            FULL-STACK ARCHITECTURE <span>//</span> SCALABLE .NET SYSTEMS <span>//</span> ENTERPRISE ERP <span>//</span> OCR PIPELINES <span>//</span> REACT &amp; TYPESCRIPT <span>//</span> POSTGRESQL <span>//</span> CLEAN ARCHITECTURE <span>//</span> HIGH CONCURRENCY
+            <span>//</span>
+            FULL-STACK ARCHITECTURE <span>//</span> SCALABLE .NET SYSTEMS <span>//</span> ENTERPRISE ERP <span>//</span> OCR PIPELINES <span>//</span> REACT &amp; TYPESCRIPT <span>//</span> POSTGRESQL <span>//</span> CLEAN ARCHITECTURE <span>//</span> HIGH CONCURRENCY
+          </div>
+        </div>
+
         <EducationSection />
         <ProjectsSection />
         <AboutSection />
