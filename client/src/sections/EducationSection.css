@@ -1,200 +1,99 @@
 /* ============================================================
-   Education & Experience Section
+   EducationSection.css – digitalpanda.com Cream Editorial Chronology
    ============================================================ */
 
-.education-section {
-  padding: 120px 0;
-  background: var(--bg-secondary);
+.panda-edu-section {
+  padding: 140px 0;
   position: relative;
+  z-index: 10;
 }
 
-.education-section::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-medium), transparent);
-}
-
-.edu-grid {
+.panda-edu-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 48px;
 }
 
-/* ---- Column label ---- */
-.edu-column-label {
-  display: inline-flex;
+.panda-edu-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.col-header-pill-row {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  font-family: var(--font-heading);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--accent-primary);
-  background: var(--accent-soft);
-  border: 1px solid var(--border-medium);
-  padding: 6px 16px;
-  border-radius: 100px;
-  margin-bottom: 28px;
+  justify-content: space-between;
+  border-bottom: 1.5px solid var(--border-cream);
+  padding-bottom: 16px;
 }
 
-.edu-column-label.work {
-  color: var(--accent-primary);
-  background: var(--accent-soft);
-  border-color: var(--border-medium);
-}
-
-.edu-timeline {
+.cards-stack {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* ---- Card ---- */
-.edu-card {
+.panda-timeline-card {
+  background: #EAE6DD;
+  border: 1.5px solid var(--border-cream);
+  border-radius: 24px;
+  padding: 32px;
   display: flex;
-  gap: 18px;
-  align-items: flex-start;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 22px 20px;
-  box-shadow: var(--shadow-xs);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  transition: var(--transition-normal);
-  position: relative;
-  overflow: hidden;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
 }
 
-.edu-card::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 4px;
-  background: var(--accent-gradient);
-  border-radius: 16px 0 0 16px;
-  transform: scaleY(0);
-  transform-origin: bottom;
-  transition: transform 0.35s ease;
+.panda-timeline-card:hover {
+  background: #FFFFFF;
+  border-color: var(--accent-vermilion);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(17, 17, 17, 0.08);
 }
 
-.edu-card:hover {
-  border-color: var(--border-active);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-3px);
-}
-
-.edu-card:hover::before {
-  transform: scaleY(1);
-}
-
-.work-card::before {
-  background: var(--accent-gradient);
-}
-
-.edu-card-icon {
-  flex-shrink: 0;
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  background: var(--accent-soft);
-  border: 1px solid var(--border-medium);
+.timeline-card-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--accent-primary);
-  transition: var(--transition-normal);
-}
-
-.work-card .edu-card-icon {
-  background: var(--accent-soft);
-  border-color: var(--border-medium);
-  color: var(--accent-primary);
-}
-
-.edu-card:hover .edu-card-icon {
-  background: var(--accent-gradient);
-  color: #ffffff;
-  border-color: transparent;
-  box-shadow: var(--shadow-blue);
-}
-
-.edu-card-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.edu-card-meta {
-  display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 10px;
+  gap: 10px;
 }
 
-.edu-period,
-.edu-location {
-  display: inline-flex;
+.timeline-card-title {
+  font-size: clamp(22px, 2.2vw, 32px);
+  font-weight: 800;
+  color: #111111;
+  line-height: 1.1;
+  transition: color 0.2s ease;
+}
+
+.panda-timeline-card:hover .timeline-card-title {
+  color: var(--accent-vermilion);
+}
+
+.timeline-card-company {
+  display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 11px;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: #333333;
 }
 
-.edu-period { color: var(--accent-primary); }
-
-.edu-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-  line-height: 1.3;
-}
-
-.edu-institution {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--accent-primary);
-  margin-bottom: 10px;
-}
-
-.edu-desc {
-  font-size: 13px;
-  color: var(--text-secondary);
+.timeline-card-desc {
+  font-family: var(--font-body);
+  font-size: 15px;
   line-height: 1.65;
-  margin-bottom: 10px;
+  color: var(--text-cream-muted);
 }
 
-.edu-grade {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent-primary);
-  background: var(--accent-soft);
-  border: 1px solid var(--border-medium);
-  padding: 2px 10px;
-  border-radius: 100px;
-}
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
 @media (max-width: 900px) {
-  .edu-grid {
+  .panda-edu-grid {
     grid-template-columns: 1fr;
     gap: 40px;
-  }
-}
-
-@media (max-width: 600px) {
-  .education-section {
-    padding: 80px 0;
-  }
-  .edu-card {
-    flex-direction: column;
-    gap: 14px;
   }
 }

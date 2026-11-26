@@ -1,36 +1,55 @@
 import { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from '../components/Navbar';
 import { HeroSection } from '../sections/HeroSection';
-import { EducationSection } from '../sections/EducationSection';
 import { ProjectsSection } from '../sections/ProjectsSection';
+import { EducationSection } from '../sections/EducationSection';
 import { AboutSection } from '../sections/AboutSection';
 import { ContactSection } from '../sections/ContactSection';
-import { GravityStarsCanvas } from '../components/GravityStarsCanvas';
-import { ParticleNetworkCanvas } from '../components/ParticleNetworkCanvas';
-import { Mail, Phone, MapPin, ArrowUpRight, ArrowUp, Lock } from 'lucide-react';
+import { SceneCanvas } from '../components/canvas/SceneCanvas';
+import { CustomCursor } from '../components/CustomCursor';
+import { ArrowUp, Lock, Mail, Phone, MapPin } from 'lucide-react';
 import { Github, Linkedin } from '../components/SocialIcons';
 import { PORTFOLIO_DATA } from '../portfolioData';
 import { Link } from 'react-router-dom';
 import '../App.css';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const scrollTo = (id: string) =>
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
 const NAV_LINKS = [
-  { label: 'Home',      id: 'home' },
-  { label: 'Education', id: 'education' },
-  { label: 'Projects',  id: 'projects' },
-  { label: 'About',     id: 'about' },
-  { label: 'Contact',   id: 'contact' },
+  { label: 'HOME',       id: 'home' },
+  { label: 'PROJECTS',   id: 'projects' },
+  { label: 'EXPERIENCE', id: 'education' },
+  { label: 'ABOUT',      id: 'about' },
+  { label: 'CONTACT',    id: 'contact' },
 ];
 
 export const PortfolioPage = () => {
-  const { theme } = useTheme();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const profile = PORTFOLIO_DATA.profile;
 
+  // Initialize Lenis smooth inertial scrolling with GSAP ticker sync
   useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.25,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+
+    const updateLenis = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(updateLenis);
+    gsap.ticker.lagSmoothing(0);
+
     const handleScroll = () => {
       if (window.scrollY > 400) {
         setShowScrollTop(true);
@@ -39,7 +58,12 @@ export const PortfolioPage = () => {
       }
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      gsap.ticker.remove(updateLenis);
+      lenis.destroy();
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -48,122 +72,142 @@ export const PortfolioPage = () => {
 
   return (
     <>
-      {theme === 'dark' ? <GravityStarsCanvas /> : <ParticleNetworkCanvas />}
+      {/* Tactile Magnetic Cursor Follower */}
+      <CustomCursor />
+
+      {/* Reactive Iridescent Liquid-Metal WebGL Canvas */}
+      <SceneCanvas />
+
+      {/* Floating Pill Navigation Bar */}
       <Navbar />
-      <main>
+
+      <main className="relative z-10">
+        {/* 1. Hero Section */}
         <HeroSection />
-        <EducationSection />
+
+        {/* 2. Full-bleed Angled Velocity Marquee */}
+        <div className="velocity-marquee" aria-hidden="true">
+          <div className="velocity-marquee-track">
+            FULL-STACK ENGINEERING <span>•</span> ERP ARCHITECTURE <span>•</span> OCR AUTOMATION <span>•</span> REACT &amp; TYPESCRIPT <span>•</span> C# .NET 9 <span>•</span> CLEAN ARCHITECTURE <span>•</span> POSTGRESQL <span>•</span>
+            FULL-STACK ENGINEERING <span>•</span> ERP ARCHITECTURE <span>•</span> OCR AUTOMATION <span>•</span> REACT &amp; TYPESCRIPT <span>•</span> C# .NET 9 <span>•</span> CLEAN ARCHITECTURE <span>•</span> POSTGRESQL <span>•</span>
+          </div>
+        </div>
+
+        {/* 3. Selected Works (Projects) */}
         <ProjectsSection />
+
+        {/* 4. High-Contrast Warm Cream Section: Experience & Education */}
+        <EducationSection />
+
+        {/* 5. High-Contrast Warm Cream Section: About Bharani */}
         <AboutSection />
+
+        {/* 6. Contact & Collaboration */}
         <ContactSection />
       </main>
 
       {/* ====== FOOTER ====== */}
-      <footer className="site-footer">
-        {/* Subtle glowing top divider */}
-        <div className="footer-top-divider" />
-
-        <div className="footer-body">
-          <div className="container footer-grid">
-
-            {/* Brand column */}
-            <div className="footer-brand-col">
-              <div className="footer-logo">
-                <div className="footer-logo-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-                  </svg>
-                </div>
-                <span className="footer-logo-text">Bharani<span>.dev</span></span>
-              </div>
-              <p className="footer-tagline">
-                Crafting premium digital experiences with clean code and modern design. Available for freelance & full-time roles.
+      <footer className="panda-footer section-dark">
+        <div className="container">
+          <div className="footer-top-row flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-12 border-b border-[rgba(255,255,255,0.12)]">
+            <div className="footer-brand">
+              <span className="text-2xl font-black font-['Syne'] text-white">BHARANI.DEV</span>
+              <p className="text-zinc-400 text-sm mt-2 max-w-sm">
+                Engineering high-concurrency backends, scalable enterprise ERPs, and reactive web experiences.
               </p>
-              {/* Socials */}
-              <div className="footer-socials">
-                {profile.socials.map((s) => (
-                  <a 
-                    key={s.platform} 
-                    href={s.url}
-                    target={s.url.startsWith('http') ? '_blank' : undefined}
-                    rel="noreferrer" 
-                    aria-label={s.label}
-                    className="footer-social-btn"
-                  >
-                    {s.platform === 'GitHub' && <Github size={18} />}
-                    {s.platform === 'LinkedIn' && <Linkedin size={18} />}
-                    {s.platform === 'Email' && <Mail size={18} />}
-                  </a>
-                ))}
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="sticker-pill lime">
+                <span className="pulsing-dot" />
+                <span>OPEN FOR APPOINTMENTS</span>
               </div>
+              <Link to="/admin" className="sticker-pill dark" data-cursor="CMS">
+                <Lock size={12} />
+                <span>ADMIN CMS</span>
+              </Link>
             </div>
-
-            {/* Quick links column */}
-            <div className="footer-col">
-              <h4 className="footer-col-title">Quick Links</h4>
-              <ul className="footer-links">
-                {NAV_LINKS.map(({ label, id }) => (
-                  <li key={id}>
-                    <button onClick={() => scrollTo(id)} className="footer-link">
-                      <ArrowUpRight size={13} />
-                      {label}
-                    </button>
-                  </li>
-                ))}
-                <li>
-                  <Link to="/admin" className="footer-link" style={{ opacity: 0.7 }}>
-                    <Lock size={12} />
-                    Admin CMS
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Contact column */}
-            <div className="footer-col">
-              <h4 className="footer-col-title">Get In Touch</h4>
-              <ul className="footer-contact-list">
-                <li>
-                  <a href={`mailto:${profile.email}`} className="footer-contact-item">
-                    <div className="footer-contact-icon"><Mail size={14} /></div>
-                    <span>{profile.email}</span>
-                  </a>
-                </li>
-                <li>
-                  <a href={`tel:${profile.phone.replace(/\s+/g, '')}`} className="footer-contact-item">
-                    <div className="footer-contact-icon"><Phone size={14} /></div>
-                    <span>{profile.phone}</span>
-                  </a>
-                </li>
-                <li>
-                  <div className="footer-contact-item">
-                    <div className="footer-contact-icon"><MapPin size={14} /></div>
-                    <span>{profile.location}</span>
-                  </div>
-                </li>
-              </ul>
-
-              {/* Availability badge */}
-              <div className="footer-available">
-                <span className="avail-dot" />
-                Available for new projects
-              </div>
-            </div>
-
           </div>
 
-          {/* Divider */}
-          <div className="footer-divider" />
+          <div className="footer-bottom-grid grid grid-cols-1 md:grid-cols-3 gap-8 py-10">
+            {/* Quick Links */}
+            <div>
+              <span className="font-mono text-xs text-zinc-500 uppercase tracking-widest block mb-4">
+                NAVIGATION
+              </span>
+              <div className="flex flex-col gap-2.5">
+                {NAV_LINKS.map(({ label, id }) => (
+                  <button
+                    key={id}
+                    onClick={() => scrollTo(id)}
+                    className="text-left text-sm text-zinc-400 hover:text-[#CCFF00] font-['Plus_Jakarta_Sans'] transition-colors"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Direct Connect */}
+            <div>
+              <span className="font-mono text-xs text-zinc-500 uppercase tracking-widest block mb-4">
+                DIRECT CHANNELS
+              </span>
+              <div className="flex flex-col gap-2.5 text-sm text-zinc-400">
+                <a href={`mailto:${profile.email}`} className="flex items-center gap-2 hover:text-[#CCFF00]">
+                  <Mail size={14} />
+                  <span>{profile.email}</span>
+                </a>
+                <a href={`tel:${profile.phone.replace(/\s+/g, '')}`} className="flex items-center gap-2 hover:text-[#CCFF00]">
+                  <Phone size={14} />
+                  <span>{profile.phone}</span>
+                </a>
+                <div className="flex items-center gap-2 text-zinc-500">
+                  <MapPin size={14} />
+                  <span>{profile.location}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Channels */}
+            <div>
+              <span className="font-mono text-xs text-zinc-500 uppercase tracking-widest block mb-4">
+                NETWORKS
+              </span>
+              <div className="flex gap-3">
+                {profile.socials.map((s) => (
+                  <a
+                    key={s.platform}
+                    href={s.url}
+                    target={s.url.startsWith('http') ? '_blank' : undefined}
+                    rel="noreferrer"
+                    className="w-10 h-10 rounded-full bg-[#141414] border border-[rgba(255,255,255,0.12)] flex items-center justify-center text-white hover:bg-[#CCFF00] hover:text-black transition-colors"
+                    data-cursor={s.label.toUpperCase()}
+                  >
+                    {s.platform === 'GitHub' && <Github size={16} />}
+                    {s.platform === 'LinkedIn' && <Linkedin size={16} />}
+                    {s.platform === 'Email' && <Mail size={16} />}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-[rgba(255,255,255,0.08)] flex justify-between items-center text-xs font-mono text-zinc-500">
+            <span>© {new Date().getFullYear()} BHARANI DHARAN. ALL RIGHTS RESERVED.</span>
+            <span>BUILT WITH REACT 19 + THREE.JS + TAILWIND</span>
+          </div>
         </div>
       </footer>
-      
-      {/* Back to top button */}
-      <button 
-        className={`hs-back-to-top ${showScrollTop ? 'visible' : ''}`}
+
+      {/* Floating Back to Top Button */}
+      <button
+        className={`panda-scroll-top ${showScrollTop ? 'visible' : ''}`}
         onClick={scrollToTop}
         aria-label="Scroll to top"
+        data-cursor="TOP"
       >
-        <ArrowUp size={20} />
+        <ArrowUp size={22} />
       </button>
     </>
   );

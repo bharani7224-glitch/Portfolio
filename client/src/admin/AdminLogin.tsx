@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Mail, Lock, Shield, ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
 import { useAuth } from './AuthContext';
+import { ApiError } from '../services/api';
 import './AdminLogin.css';
 
 export const AdminLogin: React.FC = () => {
@@ -15,7 +16,7 @@ export const AdminLogin: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // If already logged in, redirect
-  const from = (location.state as any)?.from?.pathname || '/admin/projects';
+  const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/admin/projects';
   if (user) {
     navigate(from, { replace: true });
   }
@@ -33,10 +34,14 @@ export const AdminLogin: React.FC = () => {
     try {
       await login(email.trim(), password);
       navigate(from, { replace: true });
-    } catch (err: any) {
-      setErrorMessage(
-        err.problem?.detail || err.message || 'Invalid administrator credentials. Please check and try again.'
-      );
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setErrorMessage(
+          err.problem?.detail || err.message || 'Invalid administrator credentials. Please check and try again.'
+        );
+      } else {
+        setErrorMessage('Invalid administrator credentials. Please check and try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Sparkles, Loader2, Plus, AlertCircle } from 'lucide-react';
 import type { ProjectDto, ProjectFormData } from '../services/api';
+import { ApiError } from '../services/api';
 import { ProjectLivePreview } from './ProjectLivePreview';
 import './ProjectFormModal.css';
 
@@ -157,15 +158,19 @@ export const ProjectFormModal: React.FC<ProjectFormModalProps> = ({
     try {
       await onSubmit(formData);
       onClose();
-    } catch (err: any) {
-      if (err.problem?.errors) {
-        const serverErrors: Record<string, string> = {};
-        for (const [key, msgs] of Object.entries(err.problem.errors)) {
-          serverErrors[key] = (msgs as string[])[0];
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.problem?.errors) {
+          const serverErrors: Record<string, string> = {};
+          for (const [key, msgs] of Object.entries(err.problem.errors)) {
+            serverErrors[key] = (msgs as string[])[0];
+          }
+          setErrors(serverErrors);
         }
-        setErrors(serverErrors);
+        setGeneralError(err.problem?.detail || err.message || 'Failed to save project. Please check the inputs.');
+      } else {
+        setGeneralError('Failed to save project. Please check the inputs.');
       }
-      setGeneralError(err.problem?.detail || err.message || 'Failed to save project. Please check the inputs.');
     } finally {
       setIsSubmitting(false);
     }

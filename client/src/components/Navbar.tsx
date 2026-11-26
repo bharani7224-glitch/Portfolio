@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Code2 } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 import './Navbar.css';
 
 const NAV_ITEMS = [
-  { id: 'home',      label: 'Home' },
-  { id: 'education', label: 'Education' },
-  { id: 'projects',  label: 'Projects' },
-  { id: 'about',     label: 'About' },
-  { id: 'contact',   label: 'Contact' },
+  { id: 'home',      label: 'HOME' },
+  { id: 'projects',  label: 'SELECTED WORKS' },
+  { id: 'education', label: 'EXPERIENCE' },
+  { id: 'about',     label: 'ABOUT' },
+  { id: 'contact',   label: 'CONTACT' },
 ];
 
 export const Navbar: React.FC = () => {
@@ -28,11 +27,11 @@ export const Navbar: React.FC = () => {
       });
 
       const current = offsets
-        .filter(o => o.top <= 100)
+        .filter((o) => o.top <= 140)
         .sort((a, b) => b.top - a.top)[0];
 
       if (current) setActive(current.id);
-      else if (offsets[0]?.top > 100) setActive('home');
+      else if (offsets[0]?.top > 140) setActive('home');
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -46,76 +45,74 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-      <div className="navbar-container container">
-        {/* Logo */}
-        <div className="navbar-logo" onClick={() => scrollTo('home')}>
-          <div className="logo-icon">
-            <Code2 size={18} className="icon-gradient" />
+    <header className={`panda-nav-wrap ${scrolled ? 'scrolled' : ''}`}>
+      <div className="container">
+        <nav className="panda-navbar">
+          {/* Logo Brand */}
+          <div className="panda-logo" onClick={() => scrollTo('home')} data-cursor="HOME">
+            <span className="logo-text">BHARANI</span>
+            <span className="logo-dot" />
+            <span className="logo-tag">DEV</span>
           </div>
-          <span className="logo-text">
-            Bharani<span>.dev</span>
-          </span>
-        </div>
 
-        {/* Desktop Links */}
-        <div className="navbar-links">
+          {/* Desktop Links Pill */}
+          <div className="panda-nav-links">
+            {NAV_ITEMS.map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => scrollTo(id)}
+                className={`panda-nav-link ${active === id ? 'active' : ''}`}
+                data-cursor={label}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Action CTA */}
+          <div className="panda-nav-actions">
+            <button
+              className="panda-btn panda-btn-primary nav-cta-pill"
+              onClick={() => scrollTo('contact')}
+              data-cursor="SAY HI"
+            >
+              <span>LET'S TALK</span>
+              <ArrowUpRight size={15} />
+            </button>
+
+            <button
+              className="panda-mobile-toggle"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle navigation"
+              data-cursor="MENU"
+            >
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
+        </nav>
+      </div>
+
+      {/* Mobile Drawer */}
+      <div className={`panda-mobile-drawer ${isOpen ? 'open' : ''}`}>
+        <div className="mobile-drawer-inner">
           {NAV_ITEMS.map(({ id, label }) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className={`nav-link ${active === id ? 'active' : ''}`}
+              className={`mobile-nav-btn ${active === id ? 'active' : ''}`}
             >
               {label}
-              {active === id && <span className="active-dot" />}
             </button>
           ))}
-        </div>
-
-        {/* Desktop Actions: Theme Toggle & CTA */}
-        <div className="navbar-actions">
-          <ThemeToggle />
           <button
-            className="nav-cta btn btn-primary"
+            className="panda-btn panda-btn-primary w-full justify-center mt-4"
             onClick={() => scrollTo('contact')}
           >
-            Hire Me
-          </button>
-        </div>
-
-        {/* Mobile Actions: Theme Toggle & Hamburger */}
-        <div className="mobile-header-actions">
-          <ThemeToggle className="mobile-theme-toggle" />
-          <button
-            className="mobile-toggle"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={22} /> : <Menu size={22} />}
+            <span>LET'S TALK</span>
+            <ArrowUpRight size={16} />
           </button>
         </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <div className={`mobile-nav ${isOpen ? 'open' : ''}`}>
-        {NAV_ITEMS.map(({ id, label }) => (
-          <button
-            key={id}
-            onClick={() => scrollTo(id)}
-            className={`mobile-nav-link ${active === id ? 'active' : ''}`}
-          >
-            {label}
-          </button>
-        ))}
-        <div className="mobile-drawer-bottom">
-          <button
-            className="btn btn-primary mobile-cta"
-            onClick={() => scrollTo('contact')}
-          >
-            Hire Me
-          </button>
-        </div>
-      </div>
-    </nav>
+    </header>
   );
 };

@@ -1,84 +1,88 @@
 import React from 'react';
-import { GraduationCap, Briefcase, Calendar, MapPin } from 'lucide-react';
-import { ScrollReveal } from '../components/ScrollReveal';
+import { Calendar, MapPin, Building2, Award } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../portfolioData';
 import type { TimelineEntry } from '../portfolioData';
 import './EducationSection.css';
 
-interface TimelineCardProps {
-  item: TimelineEntry;
-  delay?: number;
-}
-
-const TimelineCard: React.FC<TimelineCardProps> = ({ item, delay = 0 }) => {
-  const isEdu = item.type === 'education';
-
+const TimelineCard: React.FC<{ item: TimelineEntry; isEducation?: boolean }> = ({
+  item,
+  isEducation = false,
+}) => {
   return (
-    <ScrollReveal animation="fade-up" delay={delay} triggerOnce>
-      <div className={`edu-card ${isEdu ? 'study-card' : 'work-card'}`}>
-        <div className="edu-card-icon">
-          {isEdu ? <GraduationCap size={20} /> : <Briefcase size={20} />}
-        </div>
-        <div className="edu-card-body">
-          <div className="edu-card-meta">
-            <span className="edu-period">
-              <Calendar size={12} /> {item.period}
-            </span>
-            <span className="edu-location">
-              <MapPin size={12} /> {item.location}
-            </span>
-          </div>
-          <h4 className="edu-title">{item.title}</h4>
-          <span className="edu-institution">{item.institution}</span>
-          <p className="edu-desc">{item.description}</p>
-          {item.grade && (
-            <span className="edu-grade">{item.grade}</span>
-          )}
-        </div>
+    <div className="panda-timeline-card" data-cursor={isEducation ? 'DEGREE' : 'EXPERIENCE'}>
+      <div className="timeline-card-header">
+        <span className="sticker-pill cream">
+          <Calendar size={12} className="text-[#FF4D29]" />
+          <span>{item.period}</span>
+        </span>
+        {item.grade && (
+          <span className="sticker-pill vermilion">
+            <Award size={12} />
+            <span>{item.grade}</span>
+          </span>
+        )}
       </div>
-    </ScrollReveal>
+
+      <h3 className="timeline-card-title">{item.title}</h3>
+
+      <div className="timeline-card-company">
+        <Building2 size={15} className="text-[#FF4D29]" />
+        <span>{item.institution}</span>
+        <span className="text-zinc-400">•</span>
+        <MapPin size={14} className="text-zinc-500" />
+        <span>{item.location}</span>
+      </div>
+
+      <p className="timeline-card-desc">{item.description}</p>
+    </div>
   );
 };
 
 export const EducationSection: React.FC = () => {
   return (
-    <section id="education" className="education-section">
+    <section id="education" className="panda-edu-section section-cream">
       <div className="container">
-        <ScrollReveal animation="fade-up" triggerOnce>
-          <div className="section-header">
-            <h2>Education & <span>Experience</span></h2>
-            <div className="section-divider" />
-            <p>My academic foundation and professional journey that shaped my skills.</p>
+        {/* Editorial Header */}
+        <div className="editorial-header flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[rgba(17,17,17,0.12)] pb-8">
+          <div>
+            <span className="kicker text-[#FF4D29]">CHRONOLOGY &amp; TRAJECTORY</span>
+            <h2 className="text-[#111111]">
+              EXPERIENCE &amp; <span className="text-[#FF4D29]">ACADEMICS.</span>
+            </h2>
           </div>
-        </ScrollReveal>
+          <p className="text-[#6E6E73] font-['Plus_Jakarta_Sans']">
+            Proven deployment record in dynamic software teams alongside rigorous academic foundation in computer applications.
+          </p>
+        </div>
 
-        <div className="edu-grid">
-          {/* Education Column */}
-          <div className="edu-column">
-            <ScrollReveal animation="fade-right" triggerOnce>
-              <div className="edu-column-label">
-                <GraduationCap size={16} />
-                Education
-              </div>
-            </ScrollReveal>
-            <div className="edu-timeline">
-              {PORTFOLIO_DATA.education.map((item, i) => (
-                <TimelineCard key={i} item={item} delay={i * 150} />
+        {/* 2-Column High-Contrast Editorial Grid */}
+        <div className="panda-edu-grid">
+          {/* Column 1: Professional Experience */}
+          <div className="panda-edu-col">
+            <div className="col-header-pill-row">
+              <span className="sticker-pill vermilion">INDUSTRIAL DEPLOYMENT</span>
+              <span className="font-mono text-xs text-[#6E6E73] uppercase tracking-wider">
+                10+ MONTHS EXP
+              </span>
+            </div>
+            <div className="cards-stack">
+              {PORTFOLIO_DATA.experience.map((item, i) => (
+                <TimelineCard key={i} item={item} />
               ))}
             </div>
           </div>
 
-          {/* Experience Column */}
-          <div className="edu-column">
-            <ScrollReveal animation="fade-left" triggerOnce>
-              <div className="edu-column-label work">
-                <Briefcase size={16} />
-                Experience
-              </div>
-            </ScrollReveal>
-            <div className="edu-timeline">
-              {PORTFOLIO_DATA.experience.map((item, i) => (
-                <TimelineCard key={i} item={item} delay={i * 150} />
+          {/* Column 2: Academic Background */}
+          <div className="panda-edu-col">
+            <div className="col-header-pill-row">
+              <span className="sticker-pill cream">ACADEMIC FOUNDATION</span>
+              <span className="font-mono text-xs text-[#6E6E73] uppercase tracking-wider">
+                BCA GRADUATION
+              </span>
+            </div>
+            <div className="cards-stack">
+              {PORTFOLIO_DATA.education.map((item, i) => (
+                <TimelineCard key={i} item={item} isEducation />
               ))}
             </div>
           </div>

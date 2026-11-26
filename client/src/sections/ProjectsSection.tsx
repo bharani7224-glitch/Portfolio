@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, X, Sparkles, Filter, Layers, Server, Loader2 } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, X, Loader2 } from 'lucide-react';
 import { Github } from '../components/SocialIcons';
-import { ScrollReveal } from '../components/ScrollReveal';
 import { PORTFOLIO_DATA } from '../portfolioData';
 import type { ProjectEntry } from '../portfolioData';
 import { publicApi } from '../services/api';
@@ -9,10 +8,10 @@ import type { ProjectDto } from '../services/api';
 import './ProjectsSection.css';
 
 const FILTERS = [
-  { key: 'all', label: 'All Work', icon: <Sparkles size={13} /> },
-  { key: 'frontend', label: 'Frontend', icon: <Layers size={13} /> },
-  { key: 'fullstack', label: 'Full Stack', icon: <Server size={13} /> },
-  { key: 'systems', label: 'Systems', icon: <Filter size={13} /> },
+  { key: 'all', label: 'ALL WORKS' },
+  { key: 'fullstack', label: 'FULL STACK' },
+  { key: 'systems', label: 'ERP & OCR' },
+  { key: 'frontend', label: 'CLIENT UI' },
 ] as const;
 
 function mapDtoToProjectEntry(dto: ProjectDto): ProjectEntry {
@@ -21,7 +20,7 @@ function mapDtoToProjectEntry(dto: ProjectDto): ProjectEntry {
     title: dto.title,
     shortDesc: dto.shortDescription,
     longDesc: dto.description,
-    category: (dto.category === 'frontend' || dto.category === 'systems' ? dto.category : 'fullstack') as any,
+    category: (dto.category === 'frontend' || dto.category === 'systems' ? dto.category : 'fullstack') as 'frontend' | 'fullstack' | 'systems',
     categoryLabel: dto.category ? dto.category.toUpperCase() : 'Full Stack',
     tags: dto.technologies || [],
     features: [
@@ -30,7 +29,7 @@ function mapDtoToProjectEntry(dto: ProjectDto): ProjectEntry {
     ].filter(Boolean),
     demoUrl: dto.liveDemoUrl || undefined,
     githubUrl: dto.githubUrl || undefined,
-    highlights: dto.featured ? 'Featured Project' : (dto.category || 'Portfolio').toUpperCase(),
+    highlights: dto.featured ? 'FEATURED CASE STUDY' : (dto.category || 'SYSTEM').toUpperCase(),
     hasShine: dto.featured,
   };
 }
@@ -45,23 +44,19 @@ export const ProjectsSection: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true;
-    setIsLoading(true);
 
     publicApi
       .getProjects()
       .then((res) => {
         if (!isMounted) return;
-        if (res.data && res.data.length > 0) {
-          const mapped = res.data.map(mapDtoToProjectEntry);
-          setProjects(mapped);
+        if (res && res.data && res.data.length > 0) {
+          setProjects(res.data.map(mapDtoToProjectEntry));
         } else {
-          // If database is connected but empty, use initial static portfolio projects as baseline
           setProjects(PORTFOLIO_DATA.projects);
         }
       })
-      .catch((err) => {
+      .catch(() => {
         if (!isMounted) return;
-        console.warn('Backend API unavailable. Falling back to default portfolio projects.', err);
         setProjects(PORTFOLIO_DATA.projects);
       })
       .finally(() => {
@@ -73,63 +68,64 @@ export const ProjectsSection: React.FC = () => {
     };
   }, []);
 
-  const filtered = filter === 'all' ? projects : projects.filter((p) => p.category === filter);
+  const filtered =
+    filter === 'all'
+      ? projects
+      : projects.filter((p) => p.category === filter);
 
   return (
-    <section id="projects" className="projects-section">
+    <section id="projects" className="panda-projects-section section-dark">
       <div className="container">
-        <ScrollReveal animation="fade-up" triggerOnce>
-          <div className="section-header">
-            <h2>
-              Featured <span>Projects</span>
+        {/* Editorial Section Header */}
+        <div className="editorial-header flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[rgba(255,255,255,0.12)] pb-8">
+          <div>
+            <span className="kicker text-[#CCFF00]">SELECTED ARCHITECTURES</span>
+            <h2 className="text-white">
+              ENGINEERED <span className="text-[#CCFF00]">SOLUTIONS.</span>
             </h2>
-            <div className="section-divider" />
-            <p>
-              A curated selection of applications I've designed and engineered — focused on
-              performance, aesthetics, and clean code.
-            </p>
           </div>
-        </ScrollReveal>
 
-        {/* Filters */}
-        <ScrollReveal animation="fade-up" delay={100} triggerOnce className="proj-filter-reveal">
-          <div className="proj-filter-row">
-            <div className="proj-filter-tabs">
-              {FILTERS.map(({ key, label, icon }) => (
-                <button
-                  key={key}
-                  className={`proj-filter-btn ${filter === key ? 'active' : ''}`}
-                  onClick={(e) => {
-                    setFilter(key as typeof filter);
-                    e.currentTarget.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'nearest',
-                      inline: 'center',
-                    });
-                  }}
-                >
-                  {icon} {label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </ScrollReveal>
+          <p className="text-zinc-400 font-['Plus_Jakarta_Sans']">
+            Production-grade ERP platforms, high-throughput OCR pipelines, and modern reactive full-stack web applications.
+          </p>
+        </div>
 
-        {/* Loading Indicator */}
+        {/* Filter Navigation Tabs */}
+        <div className="flex flex-wrap items-center gap-2 pt-8 pb-12">
+          {FILTERS.map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className={`panda-filter-btn ${filter === f.key ? 'active' : ''}`}
+              data-cursor="FILTER"
+            >
+              <span>{f.label}</span>
+              <span className="filter-count">
+                {f.key === 'all'
+                  ? projects.length
+                  : projects.filter((p) => p.category === f.key).length}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Loading State */}
         {isLoading && (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255, 255, 255, 0.6)' }}>
-            <Loader2 size={28} className="animate-spin" style={{ margin: '0 auto 8px auto', color: 'var(--accent, #6366f1)' }} />
-            <p style={{ fontSize: '0.85rem' }}>Loading live projects...</p>
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <Loader2 size={32} className="animate-spin text-[#CCFF00]" />
+            <span className="font-mono text-xs text-zinc-400 uppercase tracking-wider">FETCHING SYSTEM RECORDS...</span>
           </div>
         )}
 
-        {/* Grid */}
+        {/* Asymmetric 2-Column Staggered Case-Study Grid */}
         {!isLoading && (
-          <div className="proj-grid">
-            {filtered.map((project, idx) => (
-              <ScrollReveal key={project.id} animation="fade-up" delay={idx * 120} triggerOnce>
+          <div className="panda-projects-grid">
+            {filtered.map((project, idx) => {
+              const isStaggered = idx % 2 === 1;
+              return (
                 <div
-                  className={`proj-card ${project.hasShine ? 'proj-card-shine' : ''}`}
+                  key={project.id}
+                  className={`panda-project-card ${isStaggered ? 'md:mt-16' : ''}`}
                   onClick={() => setSelected(project)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -139,96 +135,124 @@ export const ProjectsSection: React.FC = () => {
                   }}
                   tabIndex={0}
                   role="button"
-                  aria-label={`View details for ${project.title}`}
+                  aria-label={`View case study for ${project.title}`}
+                  data-cursor="VIEW PROJECT"
                 >
-                  <div className="proj-card-accent" />
-
-                  <div className="proj-badge">
-                    <Sparkles size={11} /> {project.highlights}
-                  </div>
-
-                  <h3 className="proj-title">{project.title}</h3>
-                  <p className="proj-desc">{project.shortDesc}</p>
-
-                  <div className="proj-tags">
-                    {project.tags.slice(0, 3).map((tag, i) => (
-                      <span key={i} className="proj-tag">
-                        {tag}
+                  {/* Card Visual Header / Banner */}
+                  <div className="card-visual-header">
+                    <div className="flex items-center justify-between w-full">
+                      <span className="sticker-pill lime">
+                        {project.categoryLabel || project.category.toUpperCase()}
                       </span>
-                    ))}
-                    {project.tags.length > 3 && (
-                      <span className="proj-tag-more">+{project.tags.length - 3}</span>
-                    )}
+                      <span className="card-index-num font-mono text-xs text-zinc-400">
+                        CASE // 0{idx + 1}
+                      </span>
+                    </div>
+
+                    <div className="card-arrow-pill">
+                      <ArrowUpRight size={20} />
+                    </div>
                   </div>
 
-                  <div className="proj-footer">
-                    <span className="proj-read-more">View Details →</span>
-                    <span className="proj-category-badge">{project.category}</span>
+                  {/* Card Content Body */}
+                  <div className="card-content-body">
+                    <span className="card-highlight-tag text-xs font-mono text-[#CCFF00] tracking-wider uppercase">
+                      {project.highlights || 'FEATURED WORK'}
+                    </span>
+                    <h3 className="card-project-title">{project.title}</h3>
+                    <p className="card-project-desc">{project.shortDesc}</p>
+
+                    {/* Technology Stickers */}
+                    <div className="card-tags-row">
+                      {project.tags.map((tag, i) => (
+                        <span key={i} className="sticker-pill dark">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </ScrollReveal>
-            ))}
+              );
+            })}
 
             {filtered.length === 0 && (
-              <div className="proj-empty">No projects in this category yet.</div>
+              <div className="col-span-2 text-center py-24 text-zinc-500 font-mono text-sm uppercase">
+                NO CASE STUDIES MATCHING FILTER CRITERIA.
+              </div>
             )}
           </div>
         )}
       </div>
 
-      {/* Modal */}
+      {/* Case Study Details Modal */}
       {selected && (
-        <div className="proj-modal-overlay" onClick={() => setSelected(null)}>
-          <div className="proj-modal animate-fade-in" onClick={(e) => e.stopPropagation()}>
-            <div className="proj-modal-accent" />
-            <button
-              className="proj-modal-close"
-              onClick={() => setSelected(null)}
-              aria-label="Close"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="proj-modal-header">
-              <span className="proj-modal-badge">
-                {(selected.categoryLabel || selected.category).toUpperCase()}
-              </span>
-              <h3>{selected.title}</h3>
+        <div className="panda-modal-overlay" onClick={() => setSelected(null)}>
+          <div className="panda-modal-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header-bar">
+              <div className="flex items-center gap-3">
+                <span className="sticker-pill lime">
+                  {selected.categoryLabel || selected.category.toUpperCase()}
+                </span>
+                <span className="font-mono text-xs text-zinc-400 uppercase tracking-widest">
+                  AUDITED SPECIFICATION
+                </span>
+              </div>
+              <button
+                className="modal-close-pill"
+                onClick={() => setSelected(null)}
+                aria-label="Close modal"
+                data-cursor="CLOSE"
+              >
+                <X size={20} />
+              </button>
             </div>
 
-            <div className="proj-modal-body">
-              <p className="proj-modal-desc">{selected.longDesc}</p>
+            <div className="modal-body-content">
+              <h3 className="modal-case-title">{selected.title}</h3>
+              <p className="modal-case-lead">{selected.longDesc}</p>
 
-              <div className="proj-modal-section">
-                <h4>Key Highlights</h4>
-                <ul>
+              {/* Key Highlights */}
+              <div className="modal-spec-block">
+                <h4 className="font-mono text-xs text-[#CCFF00] tracking-wider uppercase mb-3">
+                  SYSTEM HIGHLIGHTS &amp; CAPABILITIES
+                </h4>
+                <ul className="modal-features-list">
                   {selected.features.map((f, i) => (
-                    <li key={i}>{f}</li>
+                    <li key={i}>
+                      <span className="text-[#CCFF00] font-mono mr-2">✦</span>
+                      <span>{f}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="proj-modal-section">
-                <h4>Technologies Used</h4>
-                <div className="proj-tags">
-                  {selected.tags.map((tag, i) => (
-                    <span key={i} className="proj-tag">
-                      {tag}
+              {/* Technologies */}
+              <div className="modal-spec-block">
+                <h4 className="font-mono text-xs text-zinc-400 tracking-wider uppercase mb-3">
+                  DEPLOYED TECHNOLOGIES
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {selected.tags.map((t, i) => (
+                    <span key={i} className="sticker-pill dark">
+                      {t}
                     </span>
                   ))}
                 </div>
               </div>
 
+              {/* Action Buttons */}
               {(selected.demoUrl || selected.githubUrl) && (
-                <div className="proj-modal-actions">
+                <div className="modal-actions-row">
                   {selected.demoUrl && (
                     <a
                       href={selected.demoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn btn-primary"
+                      className="panda-btn panda-btn-primary"
+                      data-cursor="LIVE"
                     >
-                      <ExternalLink size={16} /> Live Demo
+                      <ExternalLink size={16} />
+                      <span>LIVE DEMO</span>
                     </a>
                   )}
                   {selected.githubUrl && (
@@ -236,9 +260,11 @@ export const ProjectsSection: React.FC = () => {
                       href={selected.githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn btn-secondary"
+                      className="panda-btn panda-btn-outline"
+                      data-cursor="CODE"
                     >
-                      <Github size={16} /> Source Code
+                      <Github size={16} />
+                      <span>SOURCE REPO</span>
                     </a>
                   )}
                 </div>

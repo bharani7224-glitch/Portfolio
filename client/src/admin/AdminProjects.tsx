@@ -12,7 +12,7 @@ import {
   ToggleRight,
   Loader2,
 } from 'lucide-react';
-import { adminApi } from '../services/api';
+import { adminApi, ApiError } from '../services/api';
 import type { ProjectDto, ProjectFormData } from '../services/api';
 import { ProjectFormModal } from './ProjectFormModal';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
@@ -57,8 +57,12 @@ export const AdminProjects: React.FC = () => {
       });
       setProjects(res.data);
       if (res.counts) setCounts(res.counts);
-    } catch (err: any) {
-      setError(err.problem?.detail || err.message || 'Failed to fetch projects.');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.problem?.detail || err.message || 'Failed to fetch projects.');
+      } else {
+        setError('Failed to fetch projects.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -93,8 +97,12 @@ export const AdminProjects: React.FC = () => {
         `Project "${project.title}" ${newStatus === 'published' ? 'published' : 'moved to drafts'}.`
       );
       fetchProjects();
-    } catch (err: any) {
-      showToast('error', err.problem?.detail || 'Failed to update publication status.');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        showToast('error', err.problem?.detail || 'Failed to update publication status.');
+      } else {
+        showToast('error', 'Failed to update publication status.');
+      }
     }
   };
 
@@ -107,8 +115,12 @@ export const AdminProjects: React.FC = () => {
       showToast('success', `Project "${deletingProject.title}" deleted.`);
       setDeletingProject(null);
       fetchProjects();
-    } catch (err: any) {
-      showToast('error', err.problem?.detail || 'Failed to delete project.');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        showToast('error', err.problem?.detail || 'Failed to delete project.');
+      } else {
+        showToast('error', 'Failed to delete project.');
+      }
     } finally {
       setIsDeleting(false);
     }
